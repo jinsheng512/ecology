@@ -1,0 +1,9 @@
+.vtable {
+	display: table;
+}
+.vrow {
+	display: table-row;
+}
+.vcell {
+	display: table-cell;
+}

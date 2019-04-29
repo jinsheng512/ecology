@@ -1,0 +1,38 @@
+body {
+	padding-top: 0px;
+	padding-right: 0px;
+	padding-bottom: 0px;
+	padding-left: 0px;
+}
+
+table.e-table {
+	border-top: 1px #90BADD solid;
+	border-left: 1px #90BADD solid;
+	width: 100%;
+}
+
+table.e-table>tbody>tr>th {
+	border-right: 1px #90BADD solid;
+	border-bottom: 1px #90BADD solid;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-right: 2px;
+	padding-left: 2px;
+	white-space: nowrap;
+	background-color: #e7f3fc;
+}
+
+table.e-table>tbody>tr>td {
+	border-right: 1px #90BADD solid;
+	border-bottom: 1px #90BADD solid;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-right: 2px;
+	padding-left: 2px;
+	white-space: nowrap; 
+}
+
+.fName {
+	background-color: #e7f3fc;
+	text-align: center;
+}

@@ -1,0 +1,66 @@
+* {
+    font-size: 12px;
+    font-weight: normal;
+}
+table {
+    border-top: 1px #AAAAAA solid;
+    border-left: 1px #AAAAAA solid;
+}
+td, th {
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    padding-left: 3px;
+    min-width: 65px;
+    border-bottom: 1px #AAAAAA solid;
+    border-right: 1px #AAAAAA solid;
+}
+td {
+    text-align: right;
+}
+th {
+    background-color: #F5F7FA;
+}
+button {
+    background-color: #30B5FF;
+    line-height: 20px;
+    color: #FFFFFF;
+    border: 0px;
+}
+button:hover {
+    background-color: #03a996;
+}
+div.tabSelect, div.tabUnSelect {
+    margin-left: 6px;
+    float: left;
+    padding-left: 5px; padding-right: 5px;
+}
+div.tabSelect {
+    border-top: 1px #FF0000 solid;
+    border-bottom: 1px #FFFFFF solid;
+}
+div.tabUnSelect {
+    background-color: #0070C1;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+td.total_1, th.total_1 {
+    color: #0070C1;
+}
+
+td.total_2, th.total_2 {
+    color: #CA8622;
+}
+
+td.total_2, th.total_2 {
+    color: #CA8622;
+}
+
+td.total_3, th.total_3 {
+    color: #2F4554;
+}
+
+td.total_4, th.total_4 {
+    color: #C23531;
+}

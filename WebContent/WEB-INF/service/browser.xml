@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module id="browser" version="1.0.0">
+    <service-point id="gongys" interface="weaver.interfaces.workflow.browser.Browser">
+        <invoke-factory>
+            <construct class="weaver.interfaces.workflow.browser.BaseBrowser">
+                <set property="name" value="供应商基本信息" />
+                <set-service property="ds" service-id="datasource.OA" />
+                <set property="search" value="select * from gongys_greedc_Test where gongys_type= (case $gys_type$ when  0 then 'a' when 1  then  'b' else '' end)" />
+                <set property="searchById" value="" />
+                <set property="searchByName" value="" />
+                <set property="nameHeader" value="" />
+                <set property="descriptionHeader" value="" />
+                <set property="outPageURL" value="" />
+                <set property="href" value="" />
+                <set property="from" value="2" />
+                <set property="showtree" value="0" />
+                <set property="nodename" value="" />
+                <set property="parentid" value="" />
+                <set property="ismutil" value="" />
+                <set property="customid" value="" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+    <service-point id="baseBrowser" interface="weaver.interfaces.workflow.browser.Browser">
+        <invoke-factory>
+            <construct class="weaver.interfaces.workflow.browser.BaseBrowser">
+                <set property="name" value="baseBrowser" />
+                <set-service property="ds" service-id="datasource.local" />
+                <set property="search" value="select id,lastname,email from hrmresource" />
+                <set property="searchById" value="" />
+                <set property="searchByName" value="" />
+                <set property="nameHeader" value="" />
+                <set property="descriptionHeader" value="" />
+                <set property="outPageURL" value="" />
+                <set property="href" value="" />
+                <set property="from" value="0" />
+                <set property="showtree" value="0" />
+                <set property="nodename" value="" />
+                <set property="parentid" value="" />
+                <set property="ismutil" value="2" />
+                <set property="customid" value="0" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+    <service-point id="gongys_type" interface="weaver.interfaces.workflow.browser.Browser">
+        <invoke-factory>
+            <construct class="weaver.interfaces.workflow.browser.BaseBrowser">
+                <set property="name" value="供应商类型" />
+                <set-service property="ds" service-id="datasource.OA" />
+                <set property="search" value="select distinct gongys_type from gongys_greedc_test" />
+                <set property="searchById" value="" />
+                <set property="searchByName" value="" />
+                <set property="nameHeader" value="" />
+                <set property="descriptionHeader" value="" />
+                <set property="outPageURL" value="" />
+                <set property="href" value="" />
+                <set property="from" value="2" />
+                <set property="showtree" value="0" />
+                <set property="nodename" value="" />
+                <set property="parentid" value="" />
+                <set property="ismutil" value="" />
+                <set property="customid" value="" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+    <service-point id="feiylb" interface="weaver.interfaces.workflow.browser.Browser">
+        <invoke-factory>
+            <construct class="weaver.interfaces.workflow.browser.BaseBrowser">
+                <set property="name" value="费用类型" />
+                <set-service property="ds" service-id="" />
+                <set property="search" value="select id,feiylx,feiylx from uf_feiylb" />
+                <set property="searchById" value="select feiylx,feiylx from uf_feiylb where id=?" />
+                <set property="searchByName" value="select id,feiylx,feiylx from uf_feiylb where feiylx like ?" />
+                <set property="nameHeader" value="" />
+                <set property="descriptionHeader" value="" />
+                <set property="outPageURL" value="/formmode/browser/CommonSingleBrowser.jsp?customid=81" />
+                <set property="href" value="/formmode/view/AddFormMode.jsp?type=0&amp;modeId=61&amp;formId=-61&amp;billid=" />
+                <set property="from" value="1" />
+                <set property="showtree" value="0" />
+                <set property="nodename" value="" />
+                <set property="parentid" value="" />
+                <set property="ismutil" value="1" />
+                <set property="customid" value="81" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+    <service-point id="hetonglx" interface="weaver.interfaces.workflow.browser.Browser">
+        <invoke-factory>
+            <construct class="weaver.interfaces.workflow.browser.BaseBrowser">
+                <set property="name" value="合同类型" />
+                <set-service property="ds" service-id="" />
+                <set property="search" value="select id,mingc,mingc from uf_hetonglx" />
+                <set property="searchById" value="select mingc,mingc from uf_hetonglx where id=?" />
+                <set property="searchByName" value="select id,mingc,mingc from uf_hetonglx where mingc like ?" />
+                <set property="nameHeader" value="" />
+                <set property="descriptionHeader" value="" />
+                <set property="outPageURL" value="/formmode/browser/CommonSingleBrowser.jsp?customid=61" />
+                <set property="href" value="/formmode/view/AddFormMode.jsp?type=0&amp;modeId=42&amp;formId=-54&amp;billid=" />
+                <set property="from" value="1" />
+                <set property="showtree" value="0" />
+                <set property="nodename" value="" />
+                <set property="parentid" value="" />
+                <set property="ismutil" value="1" />
+                <set property="customid" value="61" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+    <service-point id="hetlx" interface="weaver.interfaces.workflow.browser.Browser">
+        <invoke-factory>
+            <construct class="weaver.interfaces.workflow.browser.BaseBrowser">
+                <set property="name" value="hetlx" />
+                <set-service property="ds" service-id="" />
+                <set property="search" value="select id,bianm,bianm from uf_helx" />
+                <set property="searchById" value="select bianm,bianm from uf_helx where id=?" />
+                <set property="searchByName" value="select id,bianm,bianm from uf_helx where bianm like ?" />
+                <set property="nameHeader" value="" />
+                <set property="descriptionHeader" value="" />
+                <set property="outPageURL" value="/formmode/browser/CommonSingleBrowser.jsp?customid=121" />
+                <set property="href" value="/formmode/view/AddFormMode.jsp?type=0&amp;modeId=21&amp;formId=-47&amp;billid=" />
+                <set property="from" value="1" />
+                <set property="showtree" value="0" />
+                <set property="nodename" value="" />
+                <set property="parentid" value="" />
+                <set property="ismutil" value="1" />
+                <set property="customid" value="121" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+    <service-point id="huablx" interface="weaver.interfaces.workflow.browser.Browser">
+        <invoke-factory>
+            <construct class="weaver.interfaces.workflow.browser.BaseBrowser">
+                <set property="name" value="划拨类型" />
+                <set-service property="ds" service-id="" />
+                <set property="search" value="select id,mingc,mingc from uf_huablx" />
+                <set property="searchById" value="select mingc,mingc from uf_huablx where id=?" />
+                <set property="searchByName" value="select id,mingc,mingc from uf_huablx where mingc like ?" />
+                <set property="nameHeader" value="" />
+                <set property="descriptionHeader" value="" />
+                <set property="outPageURL" value="/formmode/browser/CommonSingleBrowser.jsp?customid=83" />
+                <set property="href" value="/formmode/view/AddFormMode.jsp?type=0&amp;modeId=63&amp;formId=-63&amp;billid=" />
+                <set property="from" value="1" />
+                <set property="showtree" value="0" />
+                <set property="nodename" value="" />
+                <set property="parentid" value="" />
+                <set property="ismutil" value="1" />
+                <set property="customid" value="83" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+    <service-point id="fuklb" interface="weaver.interfaces.workflow.browser.Browser">
+        <invoke-factory>
+            <construct class="weaver.interfaces.workflow.browser.BaseBrowser">
+                <set property="name" value="付款类型" />
+                <set-service property="ds" service-id="" />
+                <set property="search" value="select id,mingc,mingc from uf_fuklb" />
+                <set property="searchById" value="select mingc,mingc from uf_fuklb where id=?" />
+                <set property="searchByName" value="select id,mingc,mingc from uf_fuklb where mingc like ?" />
+                <set property="nameHeader" value="" />
+                <set property="descriptionHeader" value="" />
+                <set property="outPageURL" value="/formmode/browser/CommonSingleBrowser.jsp?customid=82" />
+                <set property="href" value="/formmode/view/AddFormMode.jsp?type=0&amp;modeId=62&amp;formId=-62&amp;billid=" />
+                <set property="from" value="1" />
+                <set property="showtree" value="0" />
+                <set property="nodename" value="" />
+                <set property="parentid" value="" />
+                <set property="ismutil" value="1" />
+                <set property="customid" value="82" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+    <service-point id="hetbh" interface="weaver.interfaces.workflow.browser.Browser">
+        <invoke-factory>
+            <construct class="weaver.interfaces.workflow.browser.BaseBrowser">
+                <set property="name" value="hetbh" />
+                <set-service property="ds" service-id="" />
+                <set property="search" value="select id,mc,mc from uf_httest" />
+                <set property="searchById" value="select mc,mc from uf_httest where id=?" />
+                <set property="searchByName" value="select id,mc,mc from uf_httest where mc like ?" />
+                <set property="nameHeader" value="" />
+                <set property="descriptionHeader" value="" />
+                <set property="outPageURL" value="/formmode/browser/CommonSingleBrowser.jsp?customid=41" />
+                <set property="href" value="/formmode/view/AddFormMode.jsp?type=0&amp;modeId=42&amp;formId=-53&amp;billid=" />
+                <set property="from" value="1" />
+                <set property="showtree" value="0" />
+                <set property="nodename" value="" />
+                <set property="parentid" value="" />
+                <set property="ismutil" value="2" />
+                <set property="customid" value="41" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+    <service-point id="bib" interface="weaver.interfaces.workflow.browser.Browser">
+        <invoke-factory>
+            <construct class="weaver.interfaces.workflow.browser.BaseBrowser">
+                <set property="name" value="币别" />
+                <set-service property="ds" service-id="" />
+                <set property="search" value="select id,mingc,mingc from uf_bib" />
+                <set property="searchById" value="select mingc,mingc from uf_bib where id=?" />
+                <set property="searchByName" value="select id,mingc,mingc from uf_bib where mingc like ?" />
+                <set property="nameHeader" value="" />
+                <set property="descriptionHeader" value="" />
+                <set property="outPageURL" value="/formmode/browser/CommonSingleBrowser.jsp?customid=101" />
+                <set property="href" value="/formmode/view/AddFormMode.jsp?type=0&amp;modeId=81&amp;formId=-73&amp;billid=" />
+                <set property="from" value="1" />
+                <set property="showtree" value="0" />
+                <set property="nodename" value="" />
+                <set property="parentid" value="" />
+                <set property="ismutil" value="1" />
+                <set property="customid" value="101" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+    <service-point id="hetbm" interface="weaver.interfaces.workflow.browser.Browser">
+        <invoke-factory>
+            <construct class="weaver.interfaces.workflow.browser.BaseBrowser">
+                <set property="name" value="hetbm" />
+                <set-service property="ds" service-id="" />
+                <set property="search" value="select id,hetbh,hetbh from uf_het where danjzt=1" />
+                <set property="searchById" value="select hetbh,hetbh from uf_het where id=?" />
+                <set property="searchByName" value="select id,hetbh,hetbh from uf_het where hetbh like ?" />
+                <set property="nameHeader" value="" />
+                <set property="descriptionHeader" value="" />
+                <set property="outPageURL" value="/formmode/browser/CommonSingleBrowser.jsp?customid=1" />
+                <set property="href" value="/formmode/view/AddFormMode.jsp?type=0&amp;modeId=1&amp;formId=-45&amp;billid=" />
+                <set property="from" value="1" />
+                <set property="showtree" value="0" />
+                <set property="nodename" value="" />
+                <set property="parentid" value="" />
+                <set property="ismutil" value="1" />
+                <set property="customid" value="1" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+    <service-point id="ARIndex" interface="weaver.interfaces.workflow.browser.Browser">
+        <invoke-factory>
+            <construct class="weaver.interfaces.workflow.browser.BaseBrowser">
+                <set property="name" value="ARIndex" />
+                <set-service property="ds" service-id="" />
+                <set property="search" value="select id,name,name from uf_BAIndex" />
+                <set property="searchById" value="select name,name from uf_BAIndex where id=?" />
+                <set property="searchByName" value="select id,name,name from uf_BAIndex where name like ?" />
+                <set property="nameHeader" value="" />
+                <set property="descriptionHeader" value="" />
+                <set property="outPageURL" value="/formmode/browser/CommonSingleBrowser.jsp?customid=121" />
+                <set property="href" value="/formmode/view/AddFormMode.jsp?type=0&amp;modeId=101&amp;formId=-74&amp;billid=" />
+                <set property="from" value="1" />
+                <set property="showtree" value="0" />
+                <set property="nodename" value="" />
+                <set property="parentid" value="" />
+                <set property="ismutil" value="2" />
+                <set property="customid" value="121" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+    <service-point id="yingh" interface="weaver.interfaces.workflow.browser.Browser">
+        <invoke-factory>
+            <construct class="weaver.interfaces.workflow.browser.BaseBrowser">
+                <set property="name" value="银行" />
+                <set-service property="ds" service-id="" />
+                <set property="search" value="select id,mingc,mingc from uf_yingh" />
+                <set property="searchById" value="select mingc,mingc from uf_yingh where id=?" />
+                <set property="searchByName" value="select id,mingc,mingc from uf_yingh where mingc like ?" />
+                <set property="nameHeader" value="" />
+                <set property="descriptionHeader" value="" />
+                <set property="outPageURL" value="/formmode/browser/CommonSingleBrowser.jsp?customid=2" />
+                <set property="href" value="/formmode/view/AddFormMode.jsp?type=0&amp;modeId=2&amp;formId=-46&amp;billid=" />
+                <set property="from" value="1" />
+                <set property="showtree" value="0" />
+                <set property="nodename" value="" />
+                <set property="parentid" value="" />
+                <set property="ismutil" value="2" />
+                <set property="customid" value="2" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+</module>
+

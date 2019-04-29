@@ -1,0 +1,57 @@
+@charset "UTF-8";
+* {
+	font-size: 12px;
+}
+
+.datagrid-htable, .datagrid-btable, .datagrid-ftable {
+    color: #000000;
+    border-collapse: separate;
+}
+
+.datagrid-header-row, .datagrid-row {
+    height: 30px;
+}
+
+.datagrid-header, .datagrid-td-rownumber {
+    background-color: #E7F3FC;
+}
+
+.datagrid-header td, .datagrid-body td, .datagrid-footer td {
+    border-color: #90badd;
+    border-style: solid;
+}
+
+.panel-body {
+    background-color: #ffffff;
+    font-size: 12px;
+}
+
+.datagrid-row-selected {
+    background: #FFFFFF;
+    color: #000000;
+}
+
+.datagrid-row-over {
+    background: #F5FAFB;
+}
+
+.tblMain {
+	border-top: 1px #90BADD solid;
+	border-left: 1px #90BADD solid;
+}
+
+.tblMain>tbody>tr {
+	height: 30px;
+}
+
+.tblMain>tbody>tr>th {
+    background-color: #E7F3FC;
+    font-weight: 400;
+	border-right: 1px #90BADD solid;
+	border-bottom: 1px #90BADD solid;
+}
+
+.tblMain>tbody>tr>td {
+	border-right: 1px #90BADD solid;
+	border-bottom: 1px #90BADD solid;
+}

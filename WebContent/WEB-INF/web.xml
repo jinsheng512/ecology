@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:web="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  <display-name>zh.greedc.ecology</display-name>
+  <servlet>
+    <servlet-name>CustomInitServer</servlet-name>
+    <servlet-class>ecustom.servlets.InitServer</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CustomInitServer</servlet-name>
+    <url-pattern>/ecustom/InitServer</url-pattern>
+  </servlet-mapping>
+  
+  <filter>
+    <filter-name>CustomSearchBySimpleFilter</filter-name>
+    <filter-class>ecustom.filters.CustomSearchBySimpleFilter</filter-class>
+    <init-param>
+      <param-name>filterCustomId</param-name>
+      <param-value>2</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>CustomSearchBySimpleFilter</filter-name>
+    <url-pattern>/formmode/search/CustomSearchBySimpleIframe.jsp</url-pattern>
+  </filter-mapping>
+  
+  <filter>
+    <filter-name>XFireServiceFilter</filter-name>
+    <filter-class>ecustom.servlets.XFireServiceLoggerFilter</filter-class>
+    <init-param>
+      <param-name>logServiceNames</param-name>
+      <param-value>WorkflowServiceNew</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>XFireServiceFilter</filter-name>
+    <url-pattern>/services/*</url-pattern>
+  </filter-mapping>
+  <servlet>
+    <servlet-name>GreedcAgentServlet</servlet-name>
+    <servlet-class>ecustom.servlets.AgentServlet</servlet-class>
+    <init-param>
+      <param-name>servletPackage</param-name>
+      <param-value>greedc.servlets</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GreedcAgentServlet</servlet-name>
+    <url-pattern>/greedc/servlets/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>CustomAgentServlet</servlet-name>
+    <servlet-class>ecustom.servlets.AgentServlet</servlet-class>
+    <init-param>
+      <param-name>servletPackage</param-name>
+      <param-value>ecustom.servlets</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CustomAgentServlet</servlet-name>
+    <url-pattern>/ecustom/servlets/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <display-name>XFire Servlet</display-name>
+    <servlet-name>XFireServlet</servlet-name>
+    <servlet-class>org.codehaus.xfire.transport.http.XFireConfigurableServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>XFireServlet</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+</web-app>

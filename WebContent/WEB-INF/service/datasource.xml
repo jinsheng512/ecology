@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module id="datasource" version="1.0.0">
+    <service-point id="OA" interface="weaver.interfaces.datasource.DataSource">
+        <invoke-factory>
+            <construct class="weaver.interfaces.datasource.BaseDataSource">
+                <set property="type" value="oracle" />
+                <set property="datasourcename" value="OA" />
+                <set property="iscluster" value="1" />
+                <set property="typename" value="" />
+                <set property="url" value="192.168.100.196" />
+                <set property="host" value="192.168.100.248" />
+                <set property="port" value="1521" />
+                <set property="dbname" value="ecology" />
+                <set property="user" value="/c4Q2hAVXFc=uQ0rr+xArjw=" />
+                <set property="password" value="/c4Q2hAVXFc=uQ0rr+xArjw=" />
+                <set property="minconn" value="5" />
+                <set property="maxconn" value="10" />
+                <set property="iscode" value="1" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+    <service-point id="EAS" interface="weaver.interfaces.datasource.DataSource">
+        <invoke-factory>
+            <construct class="weaver.interfaces.datasource.BaseDataSource">
+                <set property="type" value="oracle" />
+                <set property="datasourcename" value="EAS" />
+                <set property="iscluster" value="1" />
+                <set property="typename" value="" />
+                <set property="url" value="" />
+                <set property="host" value="192.168.130.224" />
+                <set property="port" value="1521" />
+                <set property="dbname" value="orcl" />
+                <set property="user" value="/c4Q2hAVXFc=dyGF+ykxXTY=" />
+                <set property="password" value="/c4Q2hAVXFc=dyGF+ykxXTY=" />
+                <set property="minconn" value="5" />
+                <set property="maxconn" value="10" />
+                <set property="iscode" value="1" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+    <service-point id="EASWEB" interface="weaver.interfaces.datasource.DataSource">
+        <invoke-factory>
+            <construct class="weaver.interfaces.datasource.BaseDataSource">
+                <set property="type" value="oracle" />
+                <set property="datasourcename" value="EASWEB" />
+                <set property="iscluster" value="" />
+                <set property="typename" value="" />
+                <set property="url" value="" />
+                <set property="host" value="192.168.100.234" />
+                <set property="port" value="1521" />
+                <set property="dbname" value="glyx" />
+                <set property="user" value="/c4Q2hAVXFc=RuuPvWe4x0g=" />
+                <set property="password" value="/c4Q2hAVXFc=RuuPvWe4x0g=" />
+                <set property="minconn" value="5" />
+                <set property="maxconn" value="10" />
+                <set property="iscode" value="1" />
+            </construct>
+        </invoke-factory>
+    </service-point>
+</module>
+

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	
+	<environments default="oaprod">
+		<environment id="oaprod">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="oracle.jdbc.OracleDriver" />
+				<property name="url" value="jdbc:oracle:thin:@192.168.100.29:1521:ecology" />
+				<property name="username" value="ecology" />
+				<property name="password" value="1" />
+			</dataSource>
+		</environment>
+		
+		<environment id="easprod">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="oracle.jdbc.OracleDriver" />
+				<property name="url" value="jdbc:oracle:thin:@192.168.100.227:1521:eas" />
+				<property name="username" value="eas" />
+				<property name="password" value="eas" />
+			</dataSource>
+		</environment>
+		
+	</environments>
+	
+	<mappers>
+		<package name="ecustom.dao.mapper"/>
+		<package name="greedc.dao.mapper"/>
+		<package name="greedc.eas.dao.mapper"/>
+	</mappers>
+</configuration>
