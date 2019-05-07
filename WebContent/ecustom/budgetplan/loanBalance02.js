@@ -178,7 +178,7 @@ $(document).ready(function(){
 	 			bankid: bankid,
 	 			page: '1',
 	 			startDate: startDate,
-	 			rows: '10'
+	 			rows: '30'
 	 		}, function(projects) {
 	 			
 	 			jinrjg = projects;
@@ -190,7 +190,7 @@ $(document).ready(function(){
 		 			sort: 'id asc',
 		 			startDate: startDate,
 		 			page: '1',
-		 			rows: '10'
+		 			rows: '30'
 		 		}, function(projects) {
 		 			
 		 			jiang = projects;
@@ -202,7 +202,7 @@ $(document).ready(function(){
 			 			sort: 'id asc',
 			 			startDate: startDate,
 			 			page: '1',
-			 			rows: '100'
+			 			rows: '30'
 			 		}, function(projects) {
 			 			
 			 			items = projects;
@@ -380,11 +380,15 @@ $(document).ready(function(){
 			
 			$('#dg').datagrid('loadData',datas);
 			
-			$('#dg').datagrid({loadFilter:pagerFilter}).datagrid({
+//			$('#dg').datagrid({
+				
+				$('#dg').datagrid({loadFilter:pagerFilter}).datagrid({
 				collapsible: true,
 				singleSelect: true,
 				width: $(document).width() - 10,
-		        pagination: false,
+		        pagination: true,
+		        pageSize: 30,
+                pageList: [30, 50, 200],
 		        remoteFilter: true,
 //		        onLoadSuccess: compute,//加载完毕后执行计算
 		        showFooter: true,
@@ -392,8 +396,8 @@ $(document).ready(function(){
 		        rownumbers:false,
 				mode: 'remote',
 				columns: [[{"title":"","colspan":2,"id":"test01"},
-				           {"title":"可用余额","colspan":FEIJGZJNUM+1,"id":"test02"},
-				  		 {"title":"不可用余额","colspan":JGZJNUM+1,"id":"test03"}, 
+				           {"title":"不可用余额","colspan":FEIJGZJNUM+1,"id":"test02"},
+				  		 {"title":"可用余额","colspan":JGZJNUM+1,"id":"test03"}, 
 				  		 {"title":"","colspan":1,"id":"test04"} ],columns],
 //				  		 {"title":"板块","colspan":BLOCKNUM+1,"id":"test05"}],columns],
 				onLoadSuccess: function(datas) {
@@ -403,7 +407,7 @@ $(document).ready(function(){
 					    var ff = "";
 					    var j= new Array();
 					    var k=0; //开始位置
-					    var g=0;
+//					    var g=0;
 					    var p=0;
 					   for (var i = 0; i < jinrjg.rows.length-1; i++) {
 						   
@@ -414,8 +418,8 @@ $(document).ready(function(){
 								  j.push(i);
 								  
 								  insertRow(k,(i)+(j.length));
-								  k=((i)+(j.length))+ (j.length);
-								  g=(i+1)+(j.length);
+								  k=(i)+1+ (j.length);  //上一个小计加1，就是下一个小计的开始
+//								  g=(i+1)+(j.length);
 						         
 							} 
 						     
@@ -425,9 +429,9 @@ $(document).ready(function(){
 						   
 					   }
 					   
-						  if(bankid=="" || bankid==undefined){
+						  if(bankid=="" || bankid==undefined){ //没有选择模块
 							   
-							  insertRow(g,p);  //最后模块小计
+							  insertRow(k,p);  //最后模块小计
 							 appendTotalRow();
 						    	 
 					  }else{
@@ -473,10 +477,10 @@ $(document).ready(function(){
 		    		ntotal =0 ;
 		    		  for (var i = 0; i < rows.length; i++) {
 		    			  
-		    		  ptotal += parseInt(rows[i][com.rows[j].ZHANGHXZMC]);
-		    		  utotal += parseInt(rows[i]['TOTAL']);
-    				  ytotal += parseInt(rows[i]['ALL_YES']);
-    				  ntotal += parseInt(rows[i]['ALL_NO']);
+		    		  ptotal += parseFloat(rows[i][com.rows[j].ZHANGHXZMC]);
+		    		  utotal += parseFloat(rows[i]['TOTAL']);
+    				  ytotal += parseFloat(rows[i]['ALL_YES']);
+    				  ntotal += parseFloat(rows[i]['ALL_NO']);
 //	    			 
 		    		  }
 		    		
@@ -516,10 +520,10 @@ $(document).ready(function(){
 		    		ntotal =0 ;
 		    		  for (var i = 0; i < rows.length; i++) {
 		    			  
-		    		  ptotal += parseInt(rows[i][com.rows[j].ZHANGHXZMC]);
-		    		  utotal += parseInt(rows[i]['TOTAL']);
-    				  ytotal += parseInt(rows[i]['ALL_YES']);
-    				  ntotal += parseInt(rows[i]['ALL_NO']);
+		    		  ptotal += parseFloat(rows[i][com.rows[j].ZHANGHXZMC]);
+		    		  utotal += parseFloat(rows[i]['TOTAL']);
+    				  ytotal += parseFloat(rows[i]['ALL_YES']);
+    				  ntotal += parseFloat(rows[i]['ALL_NO']);
 //	    			 
 		    		  }
 		    		
@@ -569,10 +573,10 @@ $(document).ready(function(){
 		    				
 		    			  }
 		    			  
-		    			  ptotal += parseInt(rows[i][com.rows[j].ZHANGHXZMC]);
-	    				  utotal += parseInt(rows[i]['TOTAL']);
-	    				  ytotal += parseInt(rows[i]['ALL_YES']);
-	    				  ntotal += parseInt(rows[i]['ALL_NO']);
+		    			  ptotal += parseFloat(rows[i][com.rows[j].ZHANGHXZMC]);
+	    				  utotal += parseFloat(rows[i]['TOTAL']);
+	    				  ytotal += parseFloat(rows[i]['ALL_YES']);
+	    				  ntotal += parseFloat(rows[i]['ALL_NO']);
 //	    			 
 		    		  }
 		    		

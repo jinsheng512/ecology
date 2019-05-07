@@ -1016,17 +1016,28 @@ public class LoanServlet extends BaseServlet {
 					}
 					
 					if (CustomUtil.isNotBlank(blockid)) {
-						whereSql += (CustomUtil.isBlank(whereSql) ? " WHERE " : " AND ") + "(" + "blockid="  + blockid + ")" ;
+						whereSql += (CustomUtil.isBlank(whereSql) ? " WHERE " : " AND ") + "(" + "suosbk="  + blockid + ")" ;
 								
 					}
-
+					
 					String Sql=" select t8.* from ("
-							+ "select  ROWNUM id,t5.*,t6.total_yuanb from cv_jinrjg_01 t5 "
-		                    +" left join(select suosbk,suosgs,sum(yuanb)total_yuanb from "
-		                    +" (select t2.suosbk,t2.suosgs  ,t2.yuanb ,t3.yewrq  from uf_accountyedj_dt1 t2 "
-		                    +" left join  uf_accountyedj t3 on t3.id = t2.mainid ) t1 "
+							+ " select  ROWNUM id,t6.* from ( "
+							+"  select  suosbk,bankmc,suosgs,subcompanyname,sum(yuanb)total_yuanb,yewrq from  ("
+		                    +"  select t2.suosbk,t2.suosgs  ,t2.yuanb ,t3.yewrq ,t4.bankmc,t5.subcompanyname  from uf_accountyedj_dt1 t2 "
+		                    +"  left join  uf_accountyedj t3 on t3.id = t2.mainid "
+		                    +"  left join  uf_bankuai t4 on t4.id = t2.suosbk  "
+		                    +"  left join  hrmsubcompany t5 on t5.id = t2.suosgs "
+		                    +"  ) t1 "
 		                    +" where (TO_DATE (yewrq , 'yyyy-MM-dd')=TO_DATE ("  + "\'"+startDate + "\'"+ ", 'yyyy-MM-dd')) "
-		                    +" group by  suosbk,suosgs ) t6 on t6.suosgs = t5.companyid ) t8";
+		                    +" group by  suosbk,suosgs,yewrq,bankmc,subcompanyname ) t6 ) t8";
+
+//					String Sql=" select t8.* from ("
+//							+ "select  ROWNUM id,t5.*,t6.total_yuanb from cv_jinrjg_01 t5 "
+//		                    +" left join(select suosbk,suosgs,sum(yuanb)total_yuanb from "
+//		                    +" (select t2.suosbk,t2.suosgs  ,t2.yuanb ,t3.yewrq  from uf_accountyedj_dt1 t2 "
+//		                    +" left join  uf_accountyedj t3 on t3.id = t2.mainid ) t1 "
+//		                    +" where (TO_DATE (yewrq , 'yyyy-MM-dd')=TO_DATE ("  + "\'"+startDate + "\'"+ ", 'yyyy-MM-dd')) "
+//		                    +" group by  suosbk,suosgs ) t6 on t6.suosgs = t5.companyid ) t8";
 					
 					String totalSql = "SELECT COUNT(1) FROM (" + Sql +")"+ whereSql;
 					log.debug("totalSql = " + Sql);
@@ -1034,8 +1045,8 @@ public class LoanServlet extends BaseServlet {
 					pageResult.put("total", RecordUtil.getInt(totalSql));
 					
 					String listSql=Sql + " INNER JOIN (SELECT ROWNUM ROWNO, " + key + " FROM (SELECT " + key + " FROM (" + Sql+")"  + orderSqlT2 + ")) T2 ON T2." + key + "=T8." + key
-			                           + " WHERE T2.ROWNO>" + ((page - 1) * rows) + " AND T2.ROWNO<=" + (page * rows) +   (CustomUtil.isBlank(blockid) ? "" :" AND (" + "blockid="  + blockid + ")") 
-			                           + " ORDER BY t8.blockid asc";
+			                           + " WHERE T2.ROWNO>" + ((page - 1) * rows) + " AND T2.ROWNO<=" + (page * rows) +   (CustomUtil.isBlank(blockid) ? "" :" AND (" + "suosbk="  + blockid + ")") 
+			                           + " ORDER BY t8.suosbk asc";
 					
 
 					log.debug("listSql = " + listSql);
@@ -1236,18 +1247,21 @@ public class LoanServlet extends BaseServlet {
 					}
 					
 					if (CustomUtil.isNotBlank(bankid)) {
-						whereSql += (CustomUtil.isBlank(whereSql) ? " WHERE " : " AND ") + "(" + "bankid="  + bankid + ")" ;
+						whereSql += (CustomUtil.isBlank(whereSql) ? " WHERE " : " AND ") + "(" + "jinrjg="  + bankid + ")" ;
 								
 					}
 
 //					bankid,jinrjgm
 					String Sql=" select t8.* from ("
-							+ "select  ROWNUM id,t5.*,t6.total_yuanb from cv_jinrjg_02 t5 "
-		                    +" left join(select jinrjg,suosgs,sum(yuanb)total_yuanb from "
-		                    +" (select t2.jinrjg,t2.suosgs  ,t2.yuanb ,t3.yewrq  from uf_accountyedj_dt1 t2 "
-		                    +" left join  uf_accountyedj t3 on t3.id = t2.mainid ) t1 "
+							+ " select  ROWNUM id,t6.* from ( "
+							+"  select  jinrjg,jinrmc,suosgs,subcompanyname,sum(yuanb)total_yuanb,yewrq from  ("
+		                    +"  select t2.jinrjg,t2.suosgs  ,t2.yuanb ,t3.yewrq ,t4.jinrmc,t5.subcompanyname  from uf_accountyedj_dt1 t2 "
+		                    +"  left join  uf_accountyedj t3 on t3.id = t2.mainid "
+		                    +"  left join  uf_bankgs t4 on t4.id = t2.jinrjg  "
+		                    +"  left join  hrmsubcompany t5 on t5.id = t2.suosgs "
+		                    +"  ) t1 "
 		                    +" where (TO_DATE (yewrq , 'yyyy-MM-dd')=TO_DATE ("  + "\'"+startDate + "\'"+ ", 'yyyy-MM-dd')) "
-		                    +" group by  jinrjg,suosgs ) t6 on t6.jinrjg = t5.bankid ) t8";
+		                    +" group by  jinrjg,suosgs,yewrq,jinrmc,subcompanyname ) t6 ) t8";
 					
 					String totalSql = "SELECT COUNT(1) FROM (" + Sql +")"+ whereSql;
 					log.debug("totalSql = " + Sql);
@@ -1255,8 +1269,8 @@ public class LoanServlet extends BaseServlet {
 					pageResult.put("total", RecordUtil.getInt(totalSql));
 					
 					String listSql=Sql + " INNER JOIN (SELECT ROWNUM ROWNO, " + key + " FROM (SELECT " + key + " FROM (" + Sql+")"  + orderSqlT2 + ")) T2 ON T2." + key + "=T8." + key
-			                           + " WHERE T2.ROWNO>" + ((page - 1) * rows) + " AND T2.ROWNO<=" + (page * rows) +   (CustomUtil.isBlank(bankid) ? "" :" AND (" + "bankid="  + bankid + ")") 
-			                           + " ORDER BY t8.bankid asc";
+			                           + " WHERE T2.ROWNO>" + ((page - 1) * rows) + " AND T2.ROWNO<=" + (page * rows) +   (CustomUtil.isBlank(bankid) ? "" :" AND (" + "jinrjg="  + bankid + ")") 
+			                           + " ORDER BY t8.jinrjg asc";
 					
 
 					log.debug("listSql = " + listSql);

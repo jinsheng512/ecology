@@ -165,7 +165,7 @@ $(document).ready(function(){
 	 			blockid: blockid,
 	 			page: '1',
 	 			startDate: startDate,
-	 			rows: '10'
+	 			rows: '1000'
 	 		}, function(projects) {
 	 			
 	 			jinrjg = projects;
@@ -177,7 +177,7 @@ $(document).ready(function(){
 		 			sort: 'id asc',
 		 			startDate: startDate,
 		 			page: '1',
-		 			rows: '10'
+		 			rows: '1000'
 		 		}, function(projects) {
 		 			
 		 			jiang = projects;
@@ -189,7 +189,7 @@ $(document).ready(function(){
 			 			sort: 'id asc',
 			 			startDate: startDate,
 			 			page: '1',
-			 			rows: '100'
+			 			rows: '1000'
 			 		}, function(projects) {
 			 			
 			 			items = projects;
@@ -361,7 +361,9 @@ $(document).ready(function(){
 				collapsible: true,
 				singleSelect: true,
 				width: $(document).width() - 10,
-		        pagination: true,
+		        pagination: false,
+		        pageSize: 600,
+                pageList: [200, 250, 600],
 		        remoteFilter: true,
 		        onLoadSuccess: compute,//加载完毕后执行计算
 		        showFooter: true,
@@ -369,8 +371,8 @@ $(document).ready(function(){
 		        rownumbers:false,
 				mode: 'remote',
 				columns: [[{"title":"","colspan":2,"id":"test01"},
-				           {"title":"可用余额","colspan":FEIJGZJNUM+1,"id":"test02"},
-				  		 {"title":"不可用余额","colspan":JGZJNUM+1,"id":"test03"}, 
+				           {"title":"不可用余额","colspan":FEIJGZJNUM+1,"id":"test02"},
+				  		 {"title":"可用余额","colspan":JGZJNUM+1,"id":"test03"}, 
 				  		 {"title":"","colspan":1,"id":"test04"} ],columns],
 //				  		 {"title":"板块","colspan":BLOCKNUM+1,"id":"test05"}],columns],
 				onLoadSuccess: function(datas) {
@@ -389,9 +391,9 @@ $(document).ready(function(){
 							  j.push(i);
 							  
 							  insertRow(k,(i)+(j.length));
-							  k=((i)+(j.length))+ (j.length);
+//							  k=((i)+(1)+ (j.length);
 //				
-							  g=(i+1)+(j.length); //最后一模块起始位置
+							  k=(i)+1+ (j.length); ; //最后一模块起始位置
 					         
 
 				     
@@ -410,7 +412,7 @@ $(document).ready(function(){
 					   
 			  if(blockid=="" || blockid==undefined){
 				   
-					  insertRow(g,p);  //最后模块小计
+					  insertRow(k,p);  //最后模块小计
 					 appendTotalRow();
 				    	 
 			  }else{
@@ -461,10 +463,10 @@ $(document).ready(function(){
 		    				
 		    			  }
 		    			  
-		    			  ptotal += parseInt(rows[i][com.rows[j].ZHANGHXZMC]);
-	    				  utotal += parseInt(rows[i]['TOTAL']);
-	    				  ytotal += parseInt(rows[i]['ALL_YES']);
-	    				  ntotal += parseInt(rows[i]['ALL_NO']);
+		    			  ptotal += parseFloat(rows[i][com.rows[j].ZHANGHXZMC]);
+	    				  utotal += parseFloat(rows[i]['TOTAL']);
+	    				  ytotal += parseFloat(rows[i]['ALL_YES']);
+	    				  ntotal += parseFloat(rows[i]['ALL_NO']);
 //	    			 
 		    		  }
 		    		
@@ -508,10 +510,10 @@ $(document).ready(function(){
 		    		ntotal =0 ;
 		    		  for (var i = 0; i < rows.length; i++) {
 		    			  
-		    		  ptotal += parseInt(rows[i][com.rows[j].ZHANGHXZMC]);
-		    		  utotal += parseInt(rows[i]['TOTAL']);
-    				  ytotal += parseInt(rows[i]['ALL_YES']);
-    				  ntotal += parseInt(rows[i]['ALL_NO']);
+		    		  ptotal += parseFloat(rows[i][com.rows[j].ZHANGHXZMC]);
+		    		  utotal += parseFloat(rows[i]['TOTAL']);
+    				  ytotal += parseFloat(rows[i]['ALL_YES']);
+    				  ntotal += parseFloat(rows[i]['ALL_NO']);
 //	    			 
 		    		  }
 		    		
@@ -551,10 +553,10 @@ $(document).ready(function(){
 		    		ntotal =0 ;
 		    		  for (var i = 0; i < rows.length; i++) {
 		    			  
-		    		  ptotal += parseInt(rows[i][com.rows[j].ZHANGHXZMC]);
-		    		  utotal += parseInt(rows[i]['TOTAL']);
-    				  ytotal += parseInt(rows[i]['ALL_YES']);
-    				  ntotal += parseInt(rows[i]['ALL_NO']);
+		    		  ptotal += parseFloat(rows[i][com.rows[j].ZHANGHXZMC]);
+		    		  utotal += parseFloat(rows[i]['TOTAL']);
+    				  ytotal += parseFloat(rows[i]['ALL_YES']);
+    				  ntotal += parseFloat(rows[i]['ALL_NO']);
 //	    			 
 		    		  }
 		    		
