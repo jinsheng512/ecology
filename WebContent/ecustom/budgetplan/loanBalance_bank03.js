@@ -25,8 +25,8 @@ $(document).ready(function(){
 	
 	var myDate = new Date();
 	var startDate = myDate.toLocaleDateString().split('/').join('-');//将1970/08/08转化成1970-08-08
+	
 
-//	var startDate = '2019-02-28';
 	$.getJSON('/greedc/servlets/Loan-getSearchDataByBanlance.json?', {
 		time: new Date().getTime(),
 		
@@ -89,7 +89,7 @@ $(document).ready(function(){
 	
 		for (var i = 0; i<COM.rows.length; i++) {
 			
-			if(COM.rows[i].SHIFJGH=='1'){
+			if(COM.rows[i].SHIFJGH=='1'){//是否可用余额
 				FEIJGZJNUM++;
 			   var column={};
 			            column["title"]=COM.rows[i].ZHANGHXZMC;
@@ -146,8 +146,78 @@ $(document).ready(function(){
 			 column5["align"]="right";
 			 columns.push(column5);
 	
+			 //表头加载完后，加载组件
 				
-	
+				$('#dg').datagrid({loadFilter:pagerFilter}).datagrid({
+					collapsible: true,
+					singleSelect: true,
+					width: $(document).width() - 10,
+			        pagination: false,
+			        pageSize: 600,
+			        pageList: [200, 250, 600],
+			        remoteFilter: true,
+			        onLoadSuccess: compute,//加载完毕后执行计算
+			        showFooter: true,
+			        fitcolumns:false,
+			        rownumbers:false,
+					mode: 'remote',
+					columns: [[{"title":"","colspan":2,"id":"test01"},
+					           {"title":"可用余额","colspan":FEIJGZJNUM+1,"id":"test02"},
+					  		 {"title":" 不可用余额","colspan":JGZJNUM+1,"id":"test03"}, 
+					  		 {"title":"","colspan":1,"id":"test04"} ],columns],
+					onLoadSuccess: function(datas) {
+						
+						  var rows = $('#dg').datagrid('getRows');
+						    var ff = "";
+						    var j= new Array();
+						    var k=0;
+						    var g=0;
+						    var p=0;
+						   for (var i = 0; i < jinrjg.rows.length-1; i++) {
+						
+					           ff =jinrjg.rows[i+1]['JINRMC']
+						 
+							if(ff != jinrjg.rows[i]['JINRMC'])  {
+								  j.push(i);
+								  
+								  insertRow(k,(i)+(j.length));
+//					
+								  k=(i)+1+ (j.length); ; //最后一模块起始位置
+						         
+							}
+						     
+					    	 
+					    	 p=(k+1)+(j.length); //最后一列位置
+					    
+						   
+					   }
+						   
+				  if(bankid=="" || bankid==undefined){
+					   
+						  insertRow(k,p);  //最后模块小计
+						 appendTotalRow();
+						 
+						  $("#dg").datagrid("resize",{
+							     height: 16*36
+							  
+							    
+						    }); 
+					    	 
+				  }else{
+					  
+					  insertRow1();  //最后模块小计,选择了板块
+				  }
+
+					        //指定列进行合并操作(数组中写要合并的列名(field属性值))
+						mergeCellsByField("dg", "BANK");
+
+						   
+						$("#btnSearch").attr("disabled",false);
+						
+					    }
+				
+				
+				});
 		
 	});
 	
@@ -158,6 +228,8 @@ $(document).ready(function(){
 		    return document.body.clientWidth * percent ;//根据自身情况更改
 
 		}  
+		
+		
 		
 	     initData();
 	 	function  initData(){
@@ -245,17 +317,13 @@ $(document).ready(function(){
 		         	data["BANK"]= jinrjg.rows[i].JINRMC;
 		         	data["COMPANY"]= jinrjg.rows[i].SUBCOMPANYNAME;
 
-		            
 		            getJianGData(data,jiang);
-//		            refreshData();
 
-					         
-				
 			}
 				
-				}else{
-					refreshData();
 				}
+				refreshData();
+				
 				
 			
 			 
@@ -270,7 +338,7 @@ $(document).ready(function(){
 					
 
 
-					 if(jiang.rows[i].BANKMC == data.BANK && jiang.rows[i].SUBCOMPANYNAME == data.COMPANY){
+					 if(jiang.rows[i].JINRMC == data.BANK && jiang.rows[i].SUBCOMPANYNAME == data.COMPANY){
 						 
 						 
 						    if(jiang.rows[i].SHIFJGH==1){
@@ -314,7 +382,7 @@ $(document).ready(function(){
 				
 
 
-				 if(totalData.rows[i].BANKMC == data.BANK && totalData.rows[i].SUBCOMPANYNAME == data.COMPANY){
+				 if(totalData.rows[i].JINRMC == data.BANK && totalData.rows[i].SUBCOMPANYNAME == data.COMPANY){
 					 
 					 
 					   
@@ -353,7 +421,7 @@ $(document).ready(function(){
 							 
 								for (var j = 0; j<items.rows.length; j++) {
 									
-									 if(items.rows[j].BANKMC == data.BANK && items.rows[j].SUBCOMPANYNAME == data.COMPANY){
+									 if(items.rows[j].JINRMC == data.BANK && items.rows[j].SUBCOMPANYNAME == data.COMPANY){
 									   
 									        if(com.rows[i].ZHANGHXZMC == items.rows[j].ZHANGHXZMC ){
 				                    	 
@@ -383,94 +451,15 @@ $(document).ready(function(){
 				
 					 datas.push(data);
 						
-					 refreshData();
 						
 		
 					}
 	 
 		function refreshData() {
 			
+		
+
 			$('#dg').datagrid('loadData',datas);
-			
-			$('#dg').datagrid({loadFilter:pagerFilter}).datagrid({
-				collapsible: true,
-				singleSelect: true,
-				width: $(document).width() - 10,
-		        pagination: false,
-		        pageSize: 600,
-                pageList: [200, 250, 600],
-		        remoteFilter: true,
-		        onLoadSuccess: compute,//加载完毕后执行计算
-		        showFooter: true,
-		        fitcolumns:false,
-		        rownumbers:false,
-				mode: 'remote',
-				columns: [[{"title":"","colspan":2,"id":"test01"},
-				           {"title":"可用余额","colspan":FEIJGZJNUM+1,"id":"test02"},
-				  		 {"title":" 不可用余额","colspan":JGZJNUM+1,"id":"test03"}, 
-				  		 {"title":"","colspan":1,"id":"test04"} ],columns],
-//				  		 {"title":"板块","colspan":BLOCKNUM+1,"id":"test05"}],columns],
-				onLoadSuccess: function(datas) {
-					
-					  var rows = $('#dg').datagrid('getRows');
-					    var ff = "";
-					    var j= new Array();
-					    var k=0;
-					    var g=0;
-					    var p=0;
-					   for (var i = 0; i < jinrjg.rows.length-1; i++) {
-					
-				           ff =jinrjg.rows[i+1]['JINRMC']
-					 
-						if(ff != jinrjg.rows[i]['JINRMC'])  {
-							  j.push(i);
-							  
-							  insertRow(k,(i)+(j.length));
-//							  k=((i)+(1)+ (j.length);
-//				
-							  k=(i)+1+ (j.length); ; //最后一模块起始位置
-					         
-
-				     
-				
-							
-						}
-					     
-				   
-				    	 
-				    	 p=(k+1)+(j.length); //最后一列位置
-				    
-					    
-				
-					   
-				   }
-					   
-			  if(bankid=="" || bankid==undefined){
-				   
-					  insertRow(k,p);  //最后模块小计
-					 appendTotalRow();
-					 
-					  $("#dg").datagrid("resize",{
-						     height: 16*36
-						  
-						    
-					    }); 
-				    	 
-			  }else{
-				  
-				  insertRow1();  //最后模块小计,选择了板块
-			  }
-
-				        //指定列进行合并操作(数组中写要合并的列名(field属性值))
-					mergeCellsByField("dg", "BANK");
-
-					   
-					$("#btnSearch").attr("disabled",false);
-					
-				    }
-			
-			
-			});
 		}
 		
 		function compute() {//计算函数
@@ -480,7 +469,7 @@ $(document).ready(function(){
 		
 		function insertRow(k,index) {//计算函数
 		    var rows = $('#dg').datagrid('getRows')//获取当前的数据行
-		    var ptotal = 0//计算listprice的总和
+		    var ptotal = 0//计算item的总和
 		    ,utotal=0//统计unitcost的总和
 		    ,ytotal=0//统计可用余额的总和
 		    ,ntotal=0//统计不可用余额的总和
@@ -514,8 +503,6 @@ $(document).ready(function(){
 		    		
 		    		  
 		    		  jsonData[com.rows[j].ZHANGHXZMC] = toMoney(ptotal);
-//		    		  fn(com.rows[j][ZHANGHXZMC],ptotal);
-//		    		  total.push( data);
 		    		  jsonData['TOTAL'] =toMoney(utotal);
 		    		  jsonData['ALL_YES'] =toMoney(ytotal);
 		    		  jsonData['ALL_NO'] =toMoney(ntotal);
@@ -537,11 +524,11 @@ $(document).ready(function(){
 		
 		function insertRow1() {//计算函数
 		    var rows = $('#dg').datagrid('getRows')//获取当前的数据行
-		    var ptotal = 0//计算listprice的总和
-		    ,utotal=0//统计unitcost的总和
-		    ,ytotal=0//统计unitcost的总和
-		    ,ntotal=0//统计unitcost的总和
-		    ,all=0;//统计unitcost的总和
+		    var ptotal = 0
+		    ,utotal=0
+		    ,ytotal=0
+		    ,ntotal=0
+		    ,all=0;
 		    var  jsonData = {"align": "right",COMPANY : '<b>合计</b>'};
 		    	
 		    	
@@ -579,11 +566,11 @@ $(document).ready(function(){
 		
 		function appendTotalRow() {//计算函数
 		    var rows = $('#dg').datagrid('getRows')//获取当前的数据行
-		    var ptotal = 0//计算listprice的总和
-		    ,utotal=0//统计unitcost的总和
-		    ,ytotal=0//统计unitcost的总和
-		    ,ntotal=0//统计unitcost的总和
- 		    ,all=0;//统计unitcost的总和
+		    var ptotal = 0
+		    ,utotal=0
+		    ,ytotal=0
+		    ,ntotal=0
+ 		    ,all=0;
 		    var  jsonData = {"align": "right",COMPANY : '<b>合计</b>'};
 		    	
 		    	
@@ -603,8 +590,6 @@ $(document).ready(function(){
 		    		  }
 		    		
 		    		  jsonData[com.rows[j].ZHANGHXZMC] = toMoney(ptotal/2);
-//		    		  fn(com.rows[j][ZHANGHXZMC],ptotal);
-//		    		  total.push( data);
 		    		  jsonData['TOTAL'] =toMoney(utotal/2);
 		    		  jsonData['ALL_YES'] =toMoney(ytotal/2);
 		    		  jsonData['ALL_NO'] =toMoney(ntotal/2);
@@ -815,9 +800,5 @@ $(document).ready(function(){
 		}
 		return strHex;
 	};
-	
- 
-	
-
 
 });

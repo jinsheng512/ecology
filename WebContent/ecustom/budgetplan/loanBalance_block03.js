@@ -27,7 +27,6 @@ $(document).ready(function(){
 	var startDate = myDate.toLocaleDateString().split('/').join('-');//将1970/08/08转化成1970-08-08
 	
 
-//	var startDate = '2019-02-28';
 	$.getJSON('/greedc/servlets/Loan-getSearchDataByBanlance.json?', {
 		time: new Date().getTime(),
 		
@@ -145,7 +144,78 @@ $(document).ready(function(){
 			 column5["align"]="right";
 			 columns.push(column5);
 	
+				$('#dg').datagrid({loadFilter:pagerFilter}).datagrid({
+					collapsible: true,
+					singleSelect: true,
+					width: $(document).width() - 10,
+			        pagination: false,
+			        pageSize: 600,
+	                pageList: [200, 250, 600],
+			        remoteFilter: true,
+			        onLoadSuccess: compute,//加载完毕后执行计算
+			        showFooter: true,
+			        fitcolumns:false,
+			        rownumbers:false,
+					mode: 'remote',
+					columns: [[{"title":"","colspan":2,"id":"test01"},
+					           {"title":"可用余额","colspan":FEIJGZJNUM+1,"id":"test02"},
+					  		 {"title":" 不可用余额","colspan":JGZJNUM+1,"id":"test03"}, 
+					  		 {"title":"","colspan":1,"id":"test04"} ],columns],
+					onLoadSuccess: function(datas) {
+						
+						  var rows = $('#dg').datagrid('getRows');
+						    var ff = "";
+						    var j= new Array();
+						    var k=0;
+						    var g=0;
+						    var p=0;
+						   for (var i = 0; i < jinrjg.rows.length-1; i++) {
+						
+					           ff =jinrjg.rows[i+1]['BANKMC']
+						 
+							if(ff != jinrjg.rows[i]['BANKMC'])  {
+								  j.push(i);
+								  
+								  insertRow(k,(i)+(j.length));
+//					
+								  k=(i)+1+ (j.length); ; //最后一模块起始位置
+						         
+							}
+						    
+					    	 p=(k+1)+(j.length); //最后一列位置
+					    
+					   }
+						   
+				  if(blockid=="" || blockid==undefined){
+					   
+						  insertRow(k,p);  //最后模块小计
+						 appendTotalRow();
+						 
+						  $("#dg").datagrid("resize",{
+							    height: 16*36, 
+							  
+							    
+						    });   
+					    	 
+				  }else{
+					  
+					  insertRow1();  //最后模块小计,选择了板块
+				  }
+
+					        //指定列进行合并操作(数组中写要合并的列名(field属性值))
+						mergeCellsByField("dg", "BLOCK");
+
+						   
+						$("#btnSearch").attr("disabled",false);
+						
+						
+					
+						
+						
+					    }
 				
+				
+				});
 	
 		
 	});
@@ -222,11 +292,6 @@ $(document).ready(function(){
 	 		});
 	 		
 
-	 		
-	 		
-
-	 		
-	 		
 	 	}
 	
 	
@@ -240,42 +305,20 @@ $(document).ready(function(){
 					
 					
 				    var data= new Array();   
-//		            data["KAIHH"]=projects.rows[i].KAIHH;
-		            if(jinrjg.rows[i].SHIFDKJAJHZYH==0){
-		            	data["TAG"]="贷款及按揭合作银行";
-
-		            }else{
-		            	
-		            	data["TAG"]="其他";
-		            }
-		            data["TOTAL"]=toMoney(jinrjg.rows[i].TOTAL_YUANB);
-		            
-		            if(jinrjg.rows[i].TOTAL_YUANB ==undefined){
-		            	
-		            	data["TOTAL"]=0.00;
-		            }
-//		            data["TOTAL_BLOCK"]=toMoney(projects.rows[i].TOTAL_YUANB);
 		            
 		         	data["BLOCK"]= jinrjg.rows[i].BANKMC;
 		         	data["COMPANY"]= jinrjg.rows[i].SUBCOMPANYNAME;
 
 		            
 		            getJianGData(data,jiang);
-//		            refreshData();
 
 					         
 				
 			}
 				
-				}else{
 					refreshData();
 				}
 				
-			
-				
-				
-//				});
-			
 			 
 		}
 	 
@@ -401,8 +444,6 @@ $(document).ready(function(){
 				
 					 datas.push(data);
 						
-					 refreshData();
-						
 		
 					}
 	 
@@ -410,89 +451,7 @@ $(document).ready(function(){
 			
 			$('#dg').datagrid('loadData',datas);
 			
-			$('#dg').datagrid({loadFilter:pagerFilter}).datagrid({
-				collapsible: true,
-				singleSelect: true,
-				width: $(document).width() - 10,
-		        pagination: false,
-		        pageSize: 600,
-                pageList: [200, 250, 600],
-		        remoteFilter: true,
-		        onLoadSuccess: compute,//加载完毕后执行计算
-		        showFooter: true,
-		        fitcolumns:false,
-		        rownumbers:false,
-				mode: 'remote',
-				columns: [[{"title":"","colspan":2,"id":"test01"},
-				           {"title":"可用余额","colspan":FEIJGZJNUM+1,"id":"test02"},
-				  		 {"title":" 不可用余额","colspan":JGZJNUM+1,"id":"test03"}, 
-				  		 {"title":"","colspan":1,"id":"test04"} ],columns],
-//				  		 {"title":"板块","colspan":BLOCKNUM+1,"id":"test05"}],columns],
-				onLoadSuccess: function(datas) {
-					
-					  var rows = $('#dg').datagrid('getRows');
-					    var ff = "";
-					    var j= new Array();
-					    var k=0;
-					    var g=0;
-					    var p=0;
-					   for (var i = 0; i < jinrjg.rows.length-1; i++) {
-					
-				           ff =jinrjg.rows[i+1]['BANKMC']
-					 
-						if(ff != jinrjg.rows[i]['BANKMC'])  {
-							  j.push(i);
-							  
-							  insertRow(k,(i)+(j.length));
-//							  k=((i)+(1)+ (j.length);
-//				
-							  k=(i)+1+ (j.length); ; //最后一模块起始位置
-					         
-
-				     
-				
-							
-						}
-					     
-				   
-				    	 
-				    	 p=(k+1)+(j.length); //最后一列位置
-				    
-					    
-				
-					   
-				   }
-					   
-			  if(blockid=="" || blockid==undefined){
-				   
-					  insertRow(k,p);  //最后模块小计
-					 appendTotalRow();
-					 
-					  $("#dg").datagrid("resize",{
-						    height: 16*36, 
-						  
-						    
-					    });   
-				    	 
-			  }else{
-				  
-				  insertRow1();  //最后模块小计,选择了板块
-			  }
-
-				        //指定列进行合并操作(数组中写要合并的列名(field属性值))
-					mergeCellsByField("dg", "BLOCK");
-
-					   
-					$("#btnSearch").attr("disabled",false);
-					
-					
-				
-					
-					
-				    }
-			
-			
-			});
+		
 		}
 		
 		function compute() {//计算函数

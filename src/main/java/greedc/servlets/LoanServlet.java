@@ -1023,7 +1023,7 @@ public class LoanServlet extends BaseServlet {
 					String Sql=" select t8.* from ("
 							+ " select  ROWNUM id,t6.* from ( "
 							+"  select  suosbk,bankmc,suosgs,subcompanyname,sum(yuanb)total_yuanb,yewrq from  ("
-		                    +"  select t2.suosbk,t2.suosgs  ,t2.yuanb ,t3.yewrq ,t4.bankmc,t5.subcompanyname  from uf_accountyedj_dt1 t2 "
+		                    +"  select t2.suosbk,t2.suosgs  ,t2.benwb yuanb ,t3.yewrq ,t4.bankmc,t5.subcompanyname  from uf_accountyedj_dt1 t2 "
 		                    +"  left join  uf_accountyedj t3 on t3.id = t2.mainid "
 		                    +"  left join  uf_bankuai t4 on t4.id = t2.suosbk  "
 		                    +"  left join  hrmsubcompany t5 on t5.id = t2.suosgs "
@@ -1255,7 +1255,7 @@ public class LoanServlet extends BaseServlet {
 					String Sql=" select t8.* from ("
 							+ " select  ROWNUM id,t6.* from ( "
 							+"  select  jinrjg,jinrmc,suosgs,subcompanyname,sum(yuanb)total_yuanb,yewrq from  ("
-		                    +"  select t2.jinrjg,t2.suosgs  ,t2.yuanb ,t3.yewrq ,t4.jinrmc,t5.subcompanyname  from uf_accountyedj_dt1 t2 "
+		                    +"  select t2.jinrjg,t2.suosgs  ,t2.benwb yuanb ,t3.yewrq ,t4.jinrmc,t5.subcompanyname  from uf_accountyedj_dt1 t2 "
 		                    +"  left join  uf_accountyedj t3 on t3.id = t2.mainid "
 		                    +"  left join  uf_bankgs t4 on t4.id = t2.jinrjg  "
 		                    +"  left join  hrmsubcompany t5 on t5.id = t2.suosgs "
@@ -1440,6 +1440,305 @@ public class LoanServlet extends BaseServlet {
 					
 					return resultMap;
 				}
+				
+				
+				
+				//领导获取板块，公司，金融机构，分类和合计03
+
+				public Map<String, Object> dataGridTotal_block03() throws Exception {
+					String objectName = getParameterCK("name");
+					String field = getParameter("field");
+					String key = getParameterCK("key");
+					String sort = getParameter("sort");
+					int page = CustomUtil.getInt(getParameterCK("page"), 1);
+					int rows = CustomUtil.getInt(getParameterCK("rows"), 10);
+					String q = getParameter("q");
+					String filter = getParameter("filter");
+					String defFilter = getParameter("defFilter");
+					String startDate = getParameter("startDate", true);
+					
+					String blockid = getParameter("blockid");
+//					String daiklxid = getParameter("daiklxid");
+					
+					String orderSqlT2 = "";
+					String orderSqlT1 = "";
+					if (CustomUtil.isNotBlank(sort)) {
+						orderSqlT2 = " ORDER BY " + sort;
+						orderSqlT1 = " ORDER BY T1." + sort;
+					}
+					
+					
+					String[] fieldArr = null;
+					if (CustomUtil.isBlank(field)) {
+						field = "T1.*";
+					} else {
+						fieldArr = field.split(",");
+						field = "T1." + fieldArr[0];
+						for (int i = 1; i < fieldArr.length; i++) {
+							field += ", T1." + fieldArr[i];
+						}
+					}
+					
+					String whereSql = "";
+					if (CustomUtil.isNotBlank(defFilter)) {
+						defFilter = defFilter.replace("{LIKE}", "LIKE");
+						defFilter = defFilter.replace("{AND}", "AND");
+						whereSql = " WHERE (" + defFilter + ")";
+					}
+					if (CustomUtil.isNotBlank(q) && CustomUtil.isNotBlank(filter)) {
+						whereSql += (CustomUtil.isBlank(whereSql) ? " WHERE " : " AND ") + "(" + filter + " LIKE '%" + q + "%')";
+					}
+					
+					if (CustomUtil.isNotBlank(blockid)) {
+						whereSql += (CustomUtil.isBlank(whereSql) ? " WHERE " : " AND ") + "(" + "suosbk="  + blockid + ")" ;
+								
+					}
+					
+					String Sql="  select  t2.id suosbk,t2.bankmc,t3.id suosgs ,t3.subcompanyname  from  uf_cashier t1 "
+		                    +"  left join  uf_bankuai t2 on t2.id = t1.shuosbk   "
+		                    +"  left join  hrmsubcompany t3 on t3.id = t1.gongsmc  "
+		                    +   (CustomUtil.isBlank(blockid) ? "" :" where (" + "t1.shuosbk="  + blockid + ")")  +"  order by t1.shuosbk asc ";
+		                   
+
+					
+					String totalSql = "SELECT COUNT(1) FROM (" + Sql +")"+ whereSql;
+					log.debug("totalSql = " + Sql);
+					LinkedHashMap<String, Object> pageResult = new LinkedHashMap<String, Object>();
+					pageResult.put("total", RecordUtil.getInt(totalSql));
+					
+					String listSql=Sql + " INNER JOIN (SELECT ROWNUM ROWNO, " + key + " FROM (SELECT " + key + " FROM (" + Sql+")"  + orderSqlT2 + ")) T2 ON T2." + key + "=T8." + key
+			                           + " WHERE T2.ROWNO>" + ((page - 1) * rows) + " AND T2.ROWNO<=" + (page * rows) +   (CustomUtil.isBlank(blockid) ? "" :" AND (" + "suosbk="  + blockid + ")") 
+			                           + " ORDER BY t8.suosbk asc";
+					
+
+					log.debug("listSql = " + listSql);
+
+					List<Map<String, String>> records = RecordUtil.executeQuery(Sql, fieldArr);
+					pageResult.put("rows", records);
+					
+					return pageResult;
+				}
 							
     
+				
+				//领导获取板块是否可用余额小计
+
+				public Map<String, Object> dataGridJianG_block03() throws Exception {
+					String objectName = getParameterCK("name");
+					String field = getParameter("field");
+					String key = getParameterCK("key");
+					String sort = getParameter("sort");
+					int page = CustomUtil.getInt(getParameterCK("page"), 1);
+					int rows = CustomUtil.getInt(getParameterCK("rows"), 10);
+					String q = getParameter("q");
+					String filter = getParameter("filter");
+					String defFilter = getParameter("defFilter");
+					String startDate = getParameter("startDate", true);
+					
+					String orderSqlT2 = "";
+					String orderSqlT1 = "";
+					if (CustomUtil.isNotBlank(sort)) {
+						orderSqlT2 = " ORDER BY " + sort;
+						orderSqlT1 = " ORDER BY T1." + sort;
+					}
+					
+					String[] fieldArr = null;
+					if (CustomUtil.isBlank(field)) {
+						field = "T1.*";
+					} else {
+						fieldArr = field.split(",");
+						field = "T1." + fieldArr[0];
+						for (int i = 1; i < fieldArr.length; i++) {
+							field += ", T1." + fieldArr[i];
+						}
+					}
+					
+					String whereSql = "";
+					if (CustomUtil.isNotBlank(defFilter)) {
+						defFilter = defFilter.replace("{LIKE}", "LIKE");
+						defFilter = defFilter.replace("{AND}", "AND");
+						whereSql = " WHERE (" + defFilter + ")";
+					}
+					if (CustomUtil.isNotBlank(q) && CustomUtil.isNotBlank(filter)) {
+						whereSql += (CustomUtil.isBlank(whereSql) ? " WHERE " : " AND ") + "(" + filter + " LIKE '%" + q + "%')";
+					}
+					
+
+					String Sql= "select * from ("
+							+" select  ROWNUM id,t3.* from ("
+							+ " select blockid,bankmc,companyid,subcompanyname,sum(yuanb)total_jiang from "
+		                    +" ("+objectName+") "
+		                    +" where (TO_DATE (yewrq , 'yyyy-MM-dd')=TO_DATE ("  + "\'"+startDate + "\'"+ ", 'yyyy-MM-dd')) "
+		                    +" group by  blockid,bankmc,companyid,subcompanyname "
+		                    +" ) t3"
+					        +" ) t1";
+		                   
+					
+					String totalSql = "SELECT COUNT(1) FROM (" + Sql +")"+ whereSql;
+					log.debug("totalSql = " + totalSql);
+					Map<String, Object> pageResult = new HashMap<String, Object>();
+					pageResult.put("total", RecordUtil.getInt(totalSql));
+					
+					String listSql=Sql + " INNER JOIN (SELECT ROWNUM ROWNO, " + key + " FROM (SELECT " + key + " FROM (" + Sql+")" + whereSql + orderSqlT2 + ")) T2 ON T2." + key + "=T1." + key
+			                           + " WHERE T2.ROWNO>" + ((page - 1) * rows) + " AND T2.ROWNO<=" + (page * rows) + (CustomUtil.isBlank(defFilter) ? "" : " AND (" + defFilter + ")");
+					              
+					
+					log.debug("listSql = " + 7);
+
+					List<Map<String, String>> records = RecordUtil.executeQuery(listSql, fieldArr);
+					pageResult.put("rows", records);
+					
+					return pageResult;
+				}
+				
+				
+				public Map<String, Object> dataGridTotal_bank03() throws Exception {
+					String objectName = getParameterCK("name");
+					String field = getParameter("field");
+					String key = getParameterCK("key");
+					String sort = getParameter("sort");
+					int page = CustomUtil.getInt(getParameterCK("page"), 1);
+					int rows = CustomUtil.getInt(getParameterCK("rows"), 10);
+					String q = getParameter("q");
+					String filter = getParameter("filter");
+					String defFilter = getParameter("defFilter");
+					String startDate = getParameter("startDate", true);
+					
+					String bankid = getParameter("bankid");
+//					String daiklxid = getParameter("daiklxid");
+					
+					String orderSqlT2 = "";
+					String orderSqlT1 = "";
+					if (CustomUtil.isNotBlank(sort)) {
+						orderSqlT2 = " ORDER BY " + sort;
+						orderSqlT1 = " ORDER BY T1." + sort;
+					}
+					
+					
+					String[] fieldArr = null;
+					if (CustomUtil.isBlank(field)) {
+						field = "T1.*";
+					} else {
+						fieldArr = field.split(",");
+						field = "T1." + fieldArr[0];
+						for (int i = 1; i < fieldArr.length; i++) {
+							field += ", T1." + fieldArr[i];
+						}
+					}
+					
+					String whereSql = "";
+					if (CustomUtil.isNotBlank(defFilter)) {
+						defFilter = defFilter.replace("{LIKE}", "LIKE");
+						defFilter = defFilter.replace("{AND}", "AND");
+						whereSql = " WHERE (" + defFilter + ")";
+					}
+					if (CustomUtil.isNotBlank(q) && CustomUtil.isNotBlank(filter)) {
+						whereSql += (CustomUtil.isBlank(whereSql) ? " WHERE " : " AND ") + "(" + filter + " LIKE '%" + q + "%')";
+					}
+					
+					if (CustomUtil.isNotBlank(bankid)) {
+						whereSql += (CustomUtil.isBlank(whereSql) ? " WHERE " : " AND ") + "(" + "jinrjg="  + bankid + ")" ;
+								
+					}
+					
+					String Sql="select jinrjg,jinrmc,suosgs,subcompanyname from ("
+							+ "  select t1.jinrjg,t2.jinrmc,t3.id suosgs ,t3.subcompanyname from uf_account t1  "
+		                    +"  left join  uf_bankgs t2 on t2.id = t1.jinrjg   "
+		                    +"  left join  hrmsubcompany t3 on t3.id = t1.gongsmc  "
+		                    +")"
+		                    +   (CustomUtil.isBlank(bankid) ? "" :" where (" + "jinrjg="  + bankid + ")") 
+		                    +" group by jinrjg,jinrmc,suosgs,subcompanyname"
+		                    +"  order by jinrjg asc ";
+		                   
+
+					
+					String totalSql = "SELECT COUNT(1) FROM (" + Sql +")"+ whereSql;
+					log.debug("totalSql = " + Sql);
+					LinkedHashMap<String, Object> pageResult = new LinkedHashMap<String, Object>();
+					pageResult.put("total", RecordUtil.getInt(totalSql));
+					
+					String listSql=Sql + " INNER JOIN (SELECT ROWNUM ROWNO, " + key + " FROM (SELECT " + key + " FROM (" + Sql+")"  + orderSqlT2 + ")) T2 ON T2." + key + "=T8." + key
+			                           + " WHERE T2.ROWNO>" + ((page - 1) * rows) + " AND T2.ROWNO<=" + (page * rows) +   (CustomUtil.isBlank(bankid) ? "" :" AND (" + "jinrjg="  + bankid + ")") 
+			                           + " ORDER BY t8.jinrjg asc";
+					
+
+					log.debug("listSql = " + listSql);
+
+					List<Map<String, String>> records = RecordUtil.executeQuery(Sql, fieldArr);
+					pageResult.put("rows", records);
+					
+					return pageResult;
+				}
+							
+    
+				
+				//领导（看全部）获取可用余额和不可用小计
+
+				public Map<String, Object> dataGridJianG_bank03() throws Exception {
+					String objectName = getParameterCK("name");
+					String field = getParameter("field");
+					String key = getParameterCK("key");
+					String sort = getParameter("sort");
+					int page = CustomUtil.getInt(getParameterCK("page"), 1);
+					int rows = CustomUtil.getInt(getParameterCK("rows"), 10);
+					String q = getParameter("q");
+					String filter = getParameter("filter");
+					String defFilter = getParameter("defFilter");
+					String startDate = getParameter("startDate", true);
+					
+					String orderSqlT2 = "";
+					String orderSqlT1 = "";
+					if (CustomUtil.isNotBlank(sort)) {
+						orderSqlT2 = " ORDER BY " + sort;
+						orderSqlT1 = " ORDER BY T1." + sort;
+					}
+					
+					String[] fieldArr = null;
+					if (CustomUtil.isBlank(field)) {
+						field = "T1.*";
+					} else {
+						fieldArr = field.split(",");
+						field = "T1." + fieldArr[0];
+						for (int i = 1; i < fieldArr.length; i++) {
+							field += ", T1." + fieldArr[i];
+						}
+					}
+					
+					String whereSql = "";
+					if (CustomUtil.isNotBlank(defFilter)) {
+						defFilter = defFilter.replace("{LIKE}", "LIKE");
+						defFilter = defFilter.replace("{AND}", "AND");
+						whereSql = " WHERE (" + defFilter + ")";
+					}
+					if (CustomUtil.isNotBlank(q) && CustomUtil.isNotBlank(filter)) {
+						whereSql += (CustomUtil.isBlank(whereSql) ? " WHERE " : " AND ") + "(" + filter + " LIKE '%" + q + "%')";
+					}
+					
+
+					String Sql= "select * from ("
+							+" select  ROWNUM id,t3.* from ("
+							+ " select bankid,jinrmc,companyid,subcompanyname,sum(yuanb)total_jiang from "
+		                    +" ("+objectName+") "
+		                    +" where (TO_DATE (yewrq , 'yyyy-MM-dd')=TO_DATE ("  + "\'"+startDate + "\'"+ ", 'yyyy-MM-dd')) "
+		                    +" group by  bankid,jinrmc,companyid,subcompanyname "
+		                    +" ) t3"
+					        +" ) t1";
+		                   
+					
+					String totalSql = "SELECT COUNT(1) FROM (" + Sql +")"+ whereSql;
+					log.debug("totalSql = " + totalSql);
+					Map<String, Object> pageResult = new HashMap<String, Object>();
+					pageResult.put("total", RecordUtil.getInt(totalSql));
+					
+					String listSql=Sql + " INNER JOIN (SELECT ROWNUM ROWNO, " + key + " FROM (SELECT " + key + " FROM (" + Sql+")" + whereSql + orderSqlT2 + ")) T2 ON T2." + key + "=T1." + key
+			                           + " WHERE T2.ROWNO>" + ((page - 1) * rows) + " AND T2.ROWNO<=" + (page * rows) + (CustomUtil.isBlank(defFilter) ? "" : " AND (" + defFilter + ")");
+					              
+					
+					log.debug("listSql = " + 7);
+
+					List<Map<String, String>> records = RecordUtil.executeQuery(listSql, fieldArr);
+					pageResult.put("rows", records);
+					
+					return pageResult;
+				}
 }

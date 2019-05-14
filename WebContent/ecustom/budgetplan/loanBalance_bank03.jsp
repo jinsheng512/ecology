@@ -14,14 +14,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>银行余额统计表</title>
-<link rel="stylesheet" type="text/css" href="common.css">
+
 <script type="text/javascript" src="/ecustom/js/easyui/jquery.min.js"></script>
 <script type="text/javascript" src="/ecustom/js/My97DatePicker/WdatePicker.js"></script>
 
 <link rel="stylesheet" type="text/css" href="/ecustom/js/easyui/themes/metro-blue/easyui.css">
 <link rel="stylesheet" type="text/css" href="/ecustom/js/easyui/themes/icon.css">
 <link rel="stylesheet" type="text/css" href="common.css">
-<script type="text/javascript" src="/ecustom/js/easyui/jquery.min.js"></script>
 <script type="text/javascript" src="/ecustom/js/easyui/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/ecustom/js/easyui/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="loanBalance_bank03.js"></script>
@@ -83,7 +82,7 @@
     </div>
 
 <div id="fundsdiv" align="center">
-		<table id="dg" class="easyui-datagrid" data-options="fitColumns:false" style="width:auto;  height: auto; padding: 5px"  rownumbers="true" 
+		<table id="dg"  data-options="fitColumns:false" style="width:auto;  height: auto; padding: 5px"  rownumbers="true" 
                 singleselect="false">
 			<thead>
              
