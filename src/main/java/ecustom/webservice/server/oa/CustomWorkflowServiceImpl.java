@@ -106,7 +106,7 @@ public class CustomWorkflowServiceImpl extends WorkflowServiceImpl implements IW
 		
 		baseBean.writeLog("*************************打印明细表明细************************");
 		//打印明细表明细
-		for(int i=0;i<request.getWorkflowDetailTableInfos().length;i++){
+//		for(int i=0;i<request.getWorkflowDetailTableInfos().length;i++){
 			
 //			for(int j=0;j<request.getWorkflowDetailTableInfos()[i].getWorkflowRequestTableRecords().length;j++){
 //				
@@ -117,7 +117,7 @@ public class CustomWorkflowServiceImpl extends WorkflowServiceImpl implements IW
 //					baseBean.writeLog("tagtag run 明细表id :"+request.getWorkflowDetailTableInfos()[i].getWorkflowRequestTableRecords()[j].getWorkflowRequestTableFields()[k].getFieldId());
 //				}
 //			}
-		}
+//		}
 		baseBean.writeLog("*************************打印主表明细************************");
 		//打印主表明细
 	for(int i=0;i<request.getWorkflowMainTableInfo().getRequestRecords().length;i++){

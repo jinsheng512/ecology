@@ -1,10 +1,6 @@
 package greedc.servlets;
 
-import ecustom.servlets.BaseServlet;
-import ecustom.util.CustomUtil;
-
 import java.net.URLDecoder;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,9 +8,12 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import sun.java2d.SunGraphicsEnvironment.T1Filter;
+import weaver.hrm.User;
 import ecustom.ecology8.commons.RecordUtil;
-import greedc.budgetplan.entities.CBPCompanyAccount;
+import ecustom.entities.HrmResource;
+import ecustom.services.HrmResourceService;
+import ecustom.servlets.BaseServlet;
+import ecustom.util.CustomUtil;
 import greedc.budgetplan.entities.LoanBank;
 import greedc.budgetplan.entities.LoanBankJg;
 import greedc.budgetplan.entities.LoanBlock;
@@ -28,12 +27,6 @@ import greedc.budgetplan.entities.LoanLetters;
 import greedc.budgetplan.entities.LoanMortgage;
 import greedc.budgetplan.entities.LoanProject;
 import greedc.budgetplan.entities.Loankjsubject;
-import greedc.budgetplan.entities.UFBPCompanyPlan;
-import greedc.budgetplan.entities.UFBPCompanyPlanDt1;
-import greedc.budgetplan.entities.UFBPCompanyPlanDt2;
-import greedc.budgetplan.entities.UFBPCompanyPlanDt3;
-import greedc.budgetplan.entities.UFBPCompanyPlanDt4;
-import greedc.budgetplan.entities.UFBPCompanyPlanDt5;
 
 public class LoanServlet extends BaseServlet {
 
@@ -100,7 +93,7 @@ public class LoanServlet extends BaseServlet {
 		String field = getParameter("field");
 		String sort = getParameter("sort");
 		String q =   URLDecoder.decode(getParameter("q"),"utf-8");
-		String filter = getParameter("filter");
+		getParameter("filter");
 		String defFilter = getParameter("defFilter");
 		String startDate = getParameter("startDate", true);
 		String endDate = getParameter("endDate", true);
@@ -606,7 +599,7 @@ public class LoanServlet extends BaseServlet {
 	//余额详细表
 	
 	public Map<String, Object> dataGridBalance() throws Exception {
-		String objectName = getParameterCK("name");
+		getParameterCK("name");
 		String field = getParameter("field");
 		String key = getParameterCK("key");
 		String sort = getParameter("sort");
@@ -619,10 +612,8 @@ public class LoanServlet extends BaseServlet {
 //		String endDate = getParameter("endDate", true);
 		
 		String orderSqlT2 = "";
-		String orderSqlT1 = "";
 		if (CustomUtil.isNotBlank(sort)) {
 			orderSqlT2 = " ORDER BY " + sort;
-			orderSqlT1 = " ORDER BY T1." + sort;
 		}
 		
 		String[] fieldArr = null;
@@ -698,10 +689,8 @@ public class LoanServlet extends BaseServlet {
 			String startDate = getParameter("startDate", true);
 			
 			String orderSqlT2 = "";
-			String orderSqlT1 = "";
 			if (CustomUtil.isNotBlank(sort)) {
 				orderSqlT2 = " ORDER BY " + sort;
-				orderSqlT1 = " ORDER BY T1." + sort;
 			}
 			
 			String[] fieldArr = null;
@@ -773,10 +762,8 @@ public class LoanServlet extends BaseServlet {
 			String startDate = getParameter("startDate", true);
 			
 			String orderSqlT2 = "";
-			String orderSqlT1 = "";
 			if (CustomUtil.isNotBlank(sort)) {
 				orderSqlT2 = " ORDER BY " + sort;
-				orderSqlT1 = " ORDER BY T1." + sort;
 			}
 			
 			String[] fieldArr = null;
@@ -843,10 +830,8 @@ public class LoanServlet extends BaseServlet {
 			String startDate = getParameter("startDate", true);
 			
 			String orderSqlT2 = "";
-			String orderSqlT1 = "";
 			if (CustomUtil.isNotBlank(sort)) {
 				orderSqlT2 = " ORDER BY " + sort;
-				orderSqlT1 = " ORDER BY T1." + sort;
 			}
 			
 			String[] fieldArr = null;
@@ -903,7 +888,7 @@ public class LoanServlet extends BaseServlet {
 		//获取金融机构，分类和合计
 
 				public Map<String, Object> dataGridTotal() throws Exception {
-					String objectName = getParameterCK("name");
+					getParameterCK("name");
 					String field = getParameter("field");
 					String key = getParameterCK("key");
 					String sort = getParameter("sort");
@@ -915,10 +900,8 @@ public class LoanServlet extends BaseServlet {
 					String startDate = getParameter("startDate", true);
 					
 					String orderSqlT2 = "";
-					String orderSqlT1 = "";
 					if (CustomUtil.isNotBlank(sort)) {
 						orderSqlT2 = " ORDER BY " + sort;
-						orderSqlT1 = " ORDER BY T1." + sort;
 					}
 					
 					String[] fieldArr = null;
@@ -972,7 +955,7 @@ public class LoanServlet extends BaseServlet {
 				//获取板块，公司，金融机构，分类和合计
 
 				public Map<String, Object> dataGridTotal01() throws Exception {
-					String objectName = getParameterCK("name");
+					getParameterCK("name");
 					String field = getParameter("field");
 					String key = getParameterCK("key");
 					String sort = getParameter("sort");
@@ -981,16 +964,16 @@ public class LoanServlet extends BaseServlet {
 					String q = getParameter("q");
 					String filter = getParameter("filter");
 					String defFilter = getParameter("defFilter");
-					String startDate = getParameter("startDate", true);
+					getParameter("startDate", true);
 					
 					String blockid = getParameter("blockid");
+					String caiwzg = getParameter("userid");
+//					String caiwzg ="326";
 //					String daiklxid = getParameter("daiklxid");
 					
 					String orderSqlT2 = "";
-					String orderSqlT1 = "";
 					if (CustomUtil.isNotBlank(sort)) {
 						orderSqlT2 = " ORDER BY " + sort;
-						orderSqlT1 = " ORDER BY T1." + sort;
 					}
 					
 					
@@ -1016,30 +999,24 @@ public class LoanServlet extends BaseServlet {
 					}
 					
 					if (CustomUtil.isNotBlank(blockid)) {
-						whereSql += (CustomUtil.isBlank(whereSql) ? " WHERE " : " AND ") + "(" + "suosbk="  + blockid + ")" ;
+						whereSql += (CustomUtil.isBlank(whereSql) ? " WHERE " : " AND ") + "(" + "shuosbk="  + blockid + ")" ;
 								
 					}
 					
-					String Sql=" select t8.* from ("
-							+ " select  ROWNUM id,t6.* from ( "
-							+"  select  suosbk,bankmc,suosgs,subcompanyname,sum(yuanb)total_yuanb,yewrq from  ("
-		                    +"  select t2.suosbk,t2.suosgs  ,t2.benwb yuanb ,t3.yewrq ,t4.bankmc,t5.subcompanyname  from uf_accountyedj_dt1 t2 "
-		                    +"  left join  uf_accountyedj t3 on t3.id = t2.mainid "
-		                    +"  left join  uf_bankuai t4 on t4.id = t2.suosbk  "
-		                    +"  left join  hrmsubcompany t5 on t5.id = t2.suosgs "
-		                    +"  ) t1 "
-		                    +" where (TO_DATE (yewrq , 'yyyy-MM-dd')=TO_DATE ("  + "\'"+startDate + "\'"+ ", 'yyyy-MM-dd')) "
-		                    +" group by  suosbk,suosgs,yewrq,bankmc,subcompanyname ) t6 ) t8";
-
-//					String Sql=" select t8.* from ("
-//							+ "select  ROWNUM id,t5.*,t6.total_yuanb from cv_jinrjg_01 t5 "
-//		                    +" left join(select suosbk,suosgs,sum(yuanb)total_yuanb from "
-//		                    +" (select t2.suosbk,t2.suosgs  ,t2.yuanb ,t3.yewrq  from uf_accountyedj_dt1 t2 "
-//		                    +" left join  uf_accountyedj t3 on t3.id = t2.mainid ) t1 "
-//		                    +" where (TO_DATE (yewrq , 'yyyy-MM-dd')=TO_DATE ("  + "\'"+startDate + "\'"+ ", 'yyyy-MM-dd')) "
-//		                    +" group by  suosbk,suosgs ) t6 on t6.suosgs = t5.companyid ) t8";
+					if (CustomUtil.isNotBlank(caiwzg)) {
+						whereSql += (CustomUtil.isBlank(whereSql) ? " WHERE " : " AND ") + "(" + "to_char(caiwzg) like '%"  + caiwzg + "%')" ;
+								
+					}
 					
-					String totalSql = "SELECT COUNT(1) FROM (" + Sql +")"+ whereSql;
+					String Sql="  select  t2.id suosbk,t2.bankmc,t3.id suosgs ,t3.subcompanyname,t3.subcompanycode ,t1.caiwzg   from  uf_cashier t1 "
+		                    +"  left join  uf_bankuai t2 on t2.id = t1.shuosbk   "
+		                    +"  left join  hrmsubcompany t3 on t3.id = t1.gongsmc  "
+		                    +   whereSql
+		                    +"  order by t1.shuosbk asc ,t3.subcompanycode asc";
+		                   
+
+					
+					String totalSql = "SELECT COUNT(1) FROM (" + Sql +")";
 					log.debug("totalSql = " + Sql);
 					LinkedHashMap<String, Object> pageResult = new LinkedHashMap<String, Object>();
 					pageResult.put("total", RecordUtil.getInt(totalSql));
@@ -1051,7 +1028,7 @@ public class LoanServlet extends BaseServlet {
 
 					log.debug("listSql = " + listSql);
 
-					List<Map<String, String>> records = RecordUtil.executeQuery(listSql, fieldArr);
+					List<Map<String, String>> records = RecordUtil.executeQuery(Sql, fieldArr);
 					pageResult.put("rows", records);
 					
 					return pageResult;
@@ -1072,10 +1049,8 @@ public class LoanServlet extends BaseServlet {
 					String startDate = getParameter("startDate", true);
 					
 					String orderSqlT2 = "";
-					String orderSqlT1 = "";
 					if (CustomUtil.isNotBlank(sort)) {
 						orderSqlT2 = " ORDER BY " + sort;
-						orderSqlT1 = " ORDER BY T1." + sort;
 					}
 					
 					String[] fieldArr = null;
@@ -1141,10 +1116,8 @@ public class LoanServlet extends BaseServlet {
 					String startDate = getParameter("startDate", true);
 					
 					String orderSqlT2 = "";
-					String orderSqlT1 = "";
 					if (CustomUtil.isNotBlank(sort)) {
 						orderSqlT2 = " ORDER BY " + sort;
-						orderSqlT1 = " ORDER BY T1." + sort;
 					}
 					
 					String[] fieldArr = null;
@@ -1203,7 +1176,7 @@ public class LoanServlet extends BaseServlet {
 				//获取板块，公司，金融机构，分类和合计02
 
 				public Map<String, Object> dataGridTotal02() throws Exception {
-					String objectName = getParameterCK("name");
+					getParameterCK("name");
 					String field = getParameter("field");
 					String key = getParameterCK("key");
 					String sort = getParameter("sort");
@@ -1212,16 +1185,15 @@ public class LoanServlet extends BaseServlet {
 					String q = getParameter("q");
 					String filter = getParameter("filter");
 					String defFilter = getParameter("defFilter");
-					String startDate = getParameter("startDate", true);
+					getParameter("startDate", true);
 					
 					String bankid = getParameter("bankid");
-//					String daiklxid = getParameter("daiklxid");
+					String caiwzg = getParameter("userid");
+//					String caiwzg = "326";
 					
 					String orderSqlT2 = "";
-					String orderSqlT1 = "";
 					if (CustomUtil.isNotBlank(sort)) {
 						orderSqlT2 = " ORDER BY " + sort;
-						orderSqlT1 = " ORDER BY T1." + sort;
 					}
 					
 					
@@ -1250,20 +1222,25 @@ public class LoanServlet extends BaseServlet {
 						whereSql += (CustomUtil.isBlank(whereSql) ? " WHERE " : " AND ") + "(" + "jinrjg="  + bankid + ")" ;
 								
 					}
-
-//					bankid,jinrjgm
-					String Sql=" select t8.* from ("
-							+ " select  ROWNUM id,t6.* from ( "
-							+"  select  jinrjg,jinrmc,suosgs,subcompanyname,sum(yuanb)total_yuanb,yewrq from  ("
-		                    +"  select t2.jinrjg,t2.suosgs  ,t2.benwb yuanb ,t3.yewrq ,t4.jinrmc,t5.subcompanyname  from uf_accountyedj_dt1 t2 "
-		                    +"  left join  uf_accountyedj t3 on t3.id = t2.mainid "
-		                    +"  left join  uf_bankgs t4 on t4.id = t2.jinrjg  "
-		                    +"  left join  hrmsubcompany t5 on t5.id = t2.suosgs "
-		                    +"  ) t1 "
-		                    +" where (TO_DATE (yewrq , 'yyyy-MM-dd')=TO_DATE ("  + "\'"+startDate + "\'"+ ", 'yyyy-MM-dd')) "
-		                    +" group by  jinrjg,suosgs,yewrq,jinrmc,subcompanyname ) t6 ) t8";
 					
-					String totalSql = "SELECT COUNT(1) FROM (" + Sql +")"+ whereSql;
+					if (CustomUtil.isNotBlank(caiwzg)) {
+						whereSql += (CustomUtil.isBlank(whereSql) ? " WHERE " : " AND ") + "(" + "to_char(caiwzg) like '%"  + caiwzg + "%')" ;
+								
+					}
+					
+					String Sql="select jinrjg,jinrmc,suosgs,subcompanyname , subcompanycode,to_char(caiwzg) from ("
+							+ "  select t1.jinrjg,t2.jinrmc,t3.id suosgs ,t3.subcompanyname ,t3.subcompanycode ,t4.caiwzg from uf_account t1  "
+		                    +"  left join  uf_bankgs t2 on t2.id = t1.jinrjg   "
+		                    +"  left join  hrmsubcompany t3 on t3.id = t1.gongsmc  "
+		                    +"  left join  uf_cashier t4 on t4.gongsmc = t1.gongsmc "
+		                    +")"
+		                    +   whereSql 
+		                    +" group by jinrjg,jinrmc,suosgs,subcompanyname , subcompanycode,to_char(caiwzg)"
+		                    +"  order by jinrjg asc ,subcompanycode asc";
+		                   
+
+					
+					String totalSql = "SELECT COUNT(1) FROM (" + Sql +")";
 					log.debug("totalSql = " + Sql);
 					LinkedHashMap<String, Object> pageResult = new LinkedHashMap<String, Object>();
 					pageResult.put("total", RecordUtil.getInt(totalSql));
@@ -1274,8 +1251,10 @@ public class LoanServlet extends BaseServlet {
 					
 
 					log.debug("listSql = " + listSql);
-
-					List<Map<String, String>> records = RecordUtil.executeQuery(listSql, fieldArr);
+					
+				
+				
+					List<Map<String, String>> records = RecordUtil.executeQuery(Sql, fieldArr);
 					pageResult.put("rows", records);
 					
 					return pageResult;
@@ -1296,10 +1275,8 @@ public class LoanServlet extends BaseServlet {
 					String startDate = getParameter("startDate", true);
 					
 					String orderSqlT2 = "";
-					String orderSqlT1 = "";
 					if (CustomUtil.isNotBlank(sort)) {
 						orderSqlT2 = " ORDER BY " + sort;
-						orderSqlT1 = " ORDER BY T1." + sort;
 					}
 					
 					String[] fieldArr = null;
@@ -1365,10 +1342,8 @@ public class LoanServlet extends BaseServlet {
 					String startDate = getParameter("startDate", true);
 					
 					String orderSqlT2 = "";
-					String orderSqlT1 = "";
 					if (CustomUtil.isNotBlank(sort)) {
 						orderSqlT2 = " ORDER BY " + sort;
-						orderSqlT1 = " ORDER BY T1." + sort;
 					}
 					
 					String[] fieldArr = null;
@@ -1424,17 +1399,31 @@ public class LoanServlet extends BaseServlet {
 				}
 				
 				//余额字段查询
-				public Map<String, Object> getSearchDataByBanlance() {
+				public Map<String, Object> getSearchDataByBanlance() throws Exception {
 //					String year = getParameterCK("year");
 					
 					
 					List<LoanBankJg> bankList = RecordUtil.searchAll(LoanBankJg.class);
 					List<LoanBlock> blockList = RecordUtil.searchAll(LoanBlock.class);
 					
+	                int userId = getUser().getUID();
+
+					
+					if (getUser() == null || userId <= 0) {
+						 userId = 0;
+					}
+					
+					User user = new User();
+					user.setUid(userId);
+					HrmResourceService hrmService = new HrmResourceService();
+					HrmResource res = hrmService.getById(userId);
+					user.setUserDepartment(res.getDepartmentId());
+					user.setUserSubCompany1(res.getSubCompanyId());
 					
 					Map<String, Object> resultMap = new HashMap<String, Object>();
 					resultMap.put("bankList", bankList);
 					resultMap.put("blockList", blockList);
+					resultMap.put("user", user);
 				
 				
 					
@@ -1446,7 +1435,7 @@ public class LoanServlet extends BaseServlet {
 				//领导获取板块，公司，金融机构，分类和合计03
 
 				public Map<String, Object> dataGridTotal_block03() throws Exception {
-					String objectName = getParameterCK("name");
+					getParameterCK("name");
 					String field = getParameter("field");
 					String key = getParameterCK("key");
 					String sort = getParameter("sort");
@@ -1455,16 +1444,14 @@ public class LoanServlet extends BaseServlet {
 					String q = getParameter("q");
 					String filter = getParameter("filter");
 					String defFilter = getParameter("defFilter");
-					String startDate = getParameter("startDate", true);
+					getParameter("startDate", true);
 					
 					String blockid = getParameter("blockid");
 //					String daiklxid = getParameter("daiklxid");
 					
 					String orderSqlT2 = "";
-					String orderSqlT1 = "";
 					if (CustomUtil.isNotBlank(sort)) {
 						orderSqlT2 = " ORDER BY " + sort;
-						orderSqlT1 = " ORDER BY T1." + sort;
 					}
 					
 					
@@ -1494,10 +1481,10 @@ public class LoanServlet extends BaseServlet {
 								
 					}
 					
-					String Sql="  select  t2.id suosbk,t2.bankmc,t3.id suosgs ,t3.subcompanyname  from  uf_cashier t1 "
+					String Sql="  select  t2.id suosbk,t2.bankmc,t3.id suosgs ,t3.subcompanyname ,t3.subcompanycode from  uf_cashier t1 "
 		                    +"  left join  uf_bankuai t2 on t2.id = t1.shuosbk   "
 		                    +"  left join  hrmsubcompany t3 on t3.id = t1.gongsmc  "
-		                    +   (CustomUtil.isBlank(blockid) ? "" :" where (" + "t1.shuosbk="  + blockid + ")")  +"  order by t1.shuosbk asc ";
+		                    +   (CustomUtil.isBlank(blockid) ? "" :" where (" + "t1.shuosbk="  + blockid + ")")  +"  order by t1.shuosbk asc,t3.subcompanycode asc ";
 		                   
 
 					
@@ -1508,7 +1495,7 @@ public class LoanServlet extends BaseServlet {
 					
 					String listSql=Sql + " INNER JOIN (SELECT ROWNUM ROWNO, " + key + " FROM (SELECT " + key + " FROM (" + Sql+")"  + orderSqlT2 + ")) T2 ON T2." + key + "=T8." + key
 			                           + " WHERE T2.ROWNO>" + ((page - 1) * rows) + " AND T2.ROWNO<=" + (page * rows) +   (CustomUtil.isBlank(blockid) ? "" :" AND (" + "suosbk="  + blockid + ")") 
-			                           + " ORDER BY t8.suosbk asc";
+			                           + " ORDER BY t8.suosbk asc,t8.suosgs asc";
 					
 
 					log.debug("listSql = " + listSql);
@@ -1536,10 +1523,8 @@ public class LoanServlet extends BaseServlet {
 					String startDate = getParameter("startDate", true);
 					
 					String orderSqlT2 = "";
-					String orderSqlT1 = "";
 					if (CustomUtil.isNotBlank(sort)) {
 						orderSqlT2 = " ORDER BY " + sort;
-						orderSqlT1 = " ORDER BY T1." + sort;
 					}
 					
 					String[] fieldArr = null;
@@ -1593,7 +1578,7 @@ public class LoanServlet extends BaseServlet {
 				
 				
 				public Map<String, Object> dataGridTotal_bank03() throws Exception {
-					String objectName = getParameterCK("name");
+					getParameterCK("name");
 					String field = getParameter("field");
 					String key = getParameterCK("key");
 					String sort = getParameter("sort");
@@ -1602,16 +1587,14 @@ public class LoanServlet extends BaseServlet {
 					String q = getParameter("q");
 					String filter = getParameter("filter");
 					String defFilter = getParameter("defFilter");
-					String startDate = getParameter("startDate", true);
+					getParameter("startDate", true);
 					
 					String bankid = getParameter("bankid");
 //					String daiklxid = getParameter("daiklxid");
 					
 					String orderSqlT2 = "";
-					String orderSqlT1 = "";
 					if (CustomUtil.isNotBlank(sort)) {
 						orderSqlT2 = " ORDER BY " + sort;
-						orderSqlT1 = " ORDER BY T1." + sort;
 					}
 					
 					
@@ -1641,14 +1624,14 @@ public class LoanServlet extends BaseServlet {
 								
 					}
 					
-					String Sql="select jinrjg,jinrmc,suosgs,subcompanyname from ("
-							+ "  select t1.jinrjg,t2.jinrmc,t3.id suosgs ,t3.subcompanyname from uf_account t1  "
+					String Sql="select jinrjg,jinrmc,suosgs,subcompanyname,subcompanycode from ("
+							+ "  select t1.jinrjg,t2.jinrmc,t3.id suosgs ,t3.subcompanyname ,t3.subcompanycode from uf_account t1  "
 		                    +"  left join  uf_bankgs t2 on t2.id = t1.jinrjg   "
 		                    +"  left join  hrmsubcompany t3 on t3.id = t1.gongsmc  "
 		                    +")"
 		                    +   (CustomUtil.isBlank(bankid) ? "" :" where (" + "jinrjg="  + bankid + ")") 
-		                    +" group by jinrjg,jinrmc,suosgs,subcompanyname"
-		                    +"  order by jinrjg asc ";
+		                    +" group by jinrjg,jinrmc,suosgs,subcompanyname,subcompanycode"
+		                    +"  order by jinrjg asc,subcompanycode asc ";
 		                   
 
 					
@@ -1687,10 +1670,8 @@ public class LoanServlet extends BaseServlet {
 					String startDate = getParameter("startDate", true);
 					
 					String orderSqlT2 = "";
-					String orderSqlT1 = "";
 					if (CustomUtil.isNotBlank(sort)) {
 						orderSqlT2 = " ORDER BY " + sort;
-						orderSqlT1 = " ORDER BY T1." + sort;
 					}
 					
 					String[] fieldArr = null;

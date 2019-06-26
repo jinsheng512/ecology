@@ -76,7 +76,7 @@
 	<span style="padding-right: 10px;">单位：元</span>
 	</div>	
 	
-	<div style="text-align: right;padding-bottom: 10px;display:none;">
+	<div style="text-align: right;padding-bottom: 10px;display:none">
 	<button id="btnExport">导出Excel</button>
     </div>
 <div id="fundsdiv" align="center"  style="width:100%;">

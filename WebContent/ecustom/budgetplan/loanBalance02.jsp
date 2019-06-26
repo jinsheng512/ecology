@@ -4,9 +4,9 @@
 
 <%@ page import="java.util.*, ecustom.util.*" %>
 
-
 <%
 	String startDate = CustomUtil.dateFormat(new Date(), "yyyy-MM-dd");
+
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -40,13 +40,17 @@
 </style>
 
 
-
 </head>
-<body>
 
+
+
+
+<body style="overflow-y:hidden";>
+
+   <input type="hidden" id="userId" name="userId" value="<%=request.getParameter("userId") %>">
 
    <div align="left" style="padding-Top: 30px;">
-   <span style="padding: 10px;text-align: center; font-size: 20px; font-weight: 700;">银行余额统计表</span>
+   <span style="padding: 10px;text-align: center; font-size: 20px; font-weight: 700;">银行余额统计表  </span>
    </div>
    
        <div align="right" style="padding-bottom: 10px;">

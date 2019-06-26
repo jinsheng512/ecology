@@ -42,7 +42,7 @@
 
 
 </head>
-<body>
+<body style="overflow-y:hidden";>
 
 
    <div align="left" style="padding-Top: 30px;">
@@ -83,7 +83,7 @@
     </div>
 
 <div id="fundsdiv" align="center">
-		<table id="dg" class="easyui-datagrid" data-options="fitColumns:false" style="width:auto;  height: 900; padding: 5px"  rownumbers="true" 
+		<table id="dg" data-options="fitColumns:false" style="width:auto;  height: 900; padding: 5px"  rownumbers="true" 
                 singleselect="false">
 			<thead>
              

@@ -1,5 +1,5 @@
 /**
- * 授信统计明细表
+ * 板块余额统计（主管）
  */
 $(document).ready(function(){
 	var blocks = {};          //板块
@@ -15,6 +15,8 @@ $(document).ready(function(){
 	var jinrjg;               //板块，公司数据和合计
 	var jiang;                //可用余额和不可用余额小计
 	var items;                //动态列数据
+	var totalData;                //动态列数据
+	var userid;                //当前用户
 	
 	//板块小计思路，首先获取到板块的数据列表，如果第一条数据板块和第二条数据所属板块相同，不插入小计，直到遇到下一个不相同板块后。才插入小计行，
 	
@@ -24,24 +26,28 @@ $(document).ready(function(){
 	
 	var myDate = new Date();
 	var startDate = myDate.toLocaleDateString().split('/').join('-');//将1970/08/08转化成1970-08-08
+	
 
-//	var startDate = '2019-02-28';
 	$.getJSON('/greedc/servlets/Loan-getSearchDataByBanlance.json?', {
 		time: new Date().getTime(),
 		
 	}, function(projects) {
-		
-//		for (var i = 0; i < projects.jkcompanyList.length; i++) {
-//			
-//			$("#company").append('<option value='+projects.jkcompanyList[i].id + '>'+projects.jkcompanyList[i].jkdwmc +'</option>');
-//		}
 		
 		for (var i = 0; i < projects.blockList.length; i++) {
 			
 			$("#block").append('<option value='+projects.blockList[i].id + '>'+projects.blockList[i].bankmc +'</option>');
 		}
 		
+		if(projects.user.uid==undefined){
+			
+		}else{
+			userid= projects.user.uid;
+			initData();
+		}
+		
 
+		
+//         initData();
 	});
 	
 	
@@ -53,6 +59,7 @@ $(document).ready(function(){
 	
 	$('#btnSearch').bind('click', function(){
 		
+		$("#btnSearch").attr("disabled",true);
 		 datas = [];
 		
 		 startDate = $('#startDate').val();
@@ -75,25 +82,26 @@ $(document).ready(function(){
 				       var column1={};
 				        column1["title"]='板块';
 				        column1["field"]="BLOCK";
-				        column1["width"]=fixWidth(0.1);
+				        column1["width"]=fixWidth(0.08);
 				        columns.push(column1);
 	                   
 				        
 				        var column2={};
 			            column2["title"]='公司';
 			            column2["field"]="COMPANY";
-			            column2["width"]=fixWidth(0.15);
+			            column2["width"]=fixWidth(0.18);
 			            columns.push(column2);
 			           
 			            
 	
 		for (var i = 0; i<COM.rows.length; i++) {
 			
-			if(COM.rows[i].SHIFJGH=='0'){
+			if(COM.rows[i].SHIFJGH=='1'){
 				FEIJGZJNUM++;
 			   var column={};
 			            column["title"]=COM.rows[i].ZHANGHXZMC;
 			            column["field"]=COM.rows[i].ZHANGHXZMC;
+			            column["align"]="right";
 			            column["width"]=fixWidth(0.08);
 			            columns.push(column);
 			}
@@ -109,16 +117,18 @@ $(document).ready(function(){
          column66["title"]='小计';
          column66["field"]="ALL_NO";
          column66["width"]=fixWidth(0.08);
+         column66["align"]="right";
          columns.push(column66);
 		
 		
 		for (var i = 0; i<COM.rows.length; i++) {
 			
-			if(COM.rows[i].SHIFJGH=='1'){
+			if(COM.rows[i].SHIFJGH=='0'){
 				JGZJNUM++;
 			   var column={};
 			            column["title"]=COM.rows[i].ZHANGHXZMC;
 			            column["field"]=COM.rows[i].ZHANGHXZMC;
+			            column["align"]="right";
 			            column["width"]=fixWidth(0.08);
 			            columns.push(column);
 			}
@@ -132,6 +142,7 @@ $(document).ready(function(){
         column77["title"]='小计';
         column77["field"]="ALL_YES";
         column77["width"]=fixWidth(0.08);
+        column77["align"]="right";
         columns.push(column77);
 	
 		
@@ -139,9 +150,90 @@ $(document).ready(function(){
 			 column5["title"]='合計';
 			 column5["field"]="TOTAL";
 			 column5["width"]=fixWidth(0.08);
+			 column5["align"]="right";
 			 columns.push(column5);
 	
+				$('#dg').datagrid({loadFilter:pagerFilter}).datagrid({
+					collapsible: true,
+					singleSelect: true,
+					width: $(document).width() - 10,
+			        pagination: false,
+			        pageSize: 600,
+	                pageList: [200, 250, 600],
+			        remoteFilter: true,
+			        onLoadSuccess: compute,//加载完毕后执行计算
+			        showFooter: true,
+			        fitcolumns:false,
+			        rownumbers:false,
+					mode: 'remote',
+					columns: [[{"title":"","colspan":2,"id":"test01"},
+					           {"title":"可用余额","colspan":FEIJGZJNUM+1,"id":"test02"},
+					  		 {"title":" 不可用余额","colspan":JGZJNUM+1,"id":"test03"}, 
+					  		 {"title":"","colspan":1,"id":"test04"} ],columns],
+					onLoadSuccess: function(datas) {
+						
+						  var rows = $('#dg').datagrid('getRows');
+						    var ff = "";
+						    var j= new Array();
+						    var k=0;
+						    var g=0;
+						    var p=0;
+						   for (var i = 0; i < jinrjg.rows.length-1; i++) {
+						
+					           ff =jinrjg.rows[i+1]['BANKMC']
+						 
+							if(ff != jinrjg.rows[i]['BANKMC'])  {
+								  j.push(i);
+								  
+								  insertRow(k,(i)+(j.length));
+//					
+								  k=(i)+1+ (j.length); ; //最后一模块起始位置
+								  p=(jinrjg.rows.length-i)+k; //最后一列位置
+							}
+						    
+//					    	 p=(k+1)+(j.length); //最后一列位置
+					    
+					   }
+						   
+				  if(blockid=="" || blockid==undefined){
+					   
+					  if(jinrjg.rows.length<=1){
+						  
+					  }else{
+						  if(k==0){
+							  insertRow2();  
+						  }else{
+							  
+							  insertRow(k,p);  //最后模块小计
+						  }
+						  
+					  }
+					  appendTotalRow();
+						  $("#dg").datagrid("resize",{
+							    height: 16*36, 
+							  
+							    
+						    });   
+					    	 
+				  }else{
+					  
+					  insertRow1();  //最后模块小计,选择了板块
+				  }
+
+					        //指定列进行合并操作(数组中写要合并的列名(field属性值))
+						mergeCellsByField("dg", "BLOCK");
+
+						   
+						$("#btnSearch").attr("disabled",false);
+						
+						
+					
+						
+						
+					    }
 				
+				
+				});
 	
 		
 	});
@@ -154,24 +246,28 @@ $(document).ready(function(){
 
 		}  
 		
-		
-	     initData();
+//	     initData();
 	 	function  initData(){
 	 		
-	 		$.getJSON('/greedc/servlets/Loan-dataGridTotal01.json?name=CV_JINRJG_01', {//金融机构
+	 		$.getJSON('/greedc/servlets/Loan-dataGridTotal01.json?name=CV_JINRJG_01', {//板块
 	 			time: new Date().getTime(),
 	 			key: 'id',
 	 			sort: 'id asc',
 	 			blockid: blockid,
+	 			userid: userid,
 	 			page: '1',
 	 			startDate: startDate,
 	 			rows: '1000'
 	 		}, function(projects) {
 	 			
 	 			jinrjg = projects;
+	 			if(projects.rows.length==0){
+	 				
+	 				$("#btnSearch").attr("disabled",false);
+	 			}
 	 			
 	 			
-		 		$.getJSON('/greedc/servlets/Loan-dataGridJianG01.json?name=CV_JIANG_DATA_01', {
+		 		$.getJSON('/greedc/servlets/Loan-dataGridJianG01.json?name=CV_JIANG_DATA_01', { //  板块是否可用小计
 		 			time: new Date().getTime(),
 		 			key: 'id',
 		 			sort: 'id asc',
@@ -183,7 +279,7 @@ $(document).ready(function(){
 		 			jiang = projects;
 		 			
 		 			
-			 		$.getJSON('/greedc/servlets/Loan-dataGridJinRjg01.json?name=CV_JINRJG_DATA', {
+			 		$.getJSON('/greedc/servlets/Loan-dataGridJinRjg01.json?name=CV_JINRJG_DATA', {  // 
 			 			time: new Date().getTime(),
 			 			key: 'id',
 			 			sort: 'id asc',
@@ -194,7 +290,23 @@ $(document).ready(function(){
 			 			
 			 			items = projects;
 			 			
-			 			getData(startDate,jinrjg);
+			 			
+			 			$.getJSON('/greedc/servlets/Loan-dataGridJianG_block03.json?name=CV_JIANG_DATA_01', {
+				 			time: new Date().getTime(),
+				 			key: 'id',
+				 			sort: 'id asc',
+				 			startDate: startDate,
+				 			page: '1',
+				 			rows: '1000'
+				 		}, function(projects) {
+				 			
+				 			totalData = projects;
+				 			
+				 			getData(startDate,jinrjg);
+				 		}
+			 		);
+			 			
+			 			
 			 		});
 		 		});
 	 			
@@ -203,11 +315,6 @@ $(document).ready(function(){
 	 		});
 	 		
 
-	 		
-	 		
-
-	 		
-	 		
 	 	}
 	
 	
@@ -221,42 +328,20 @@ $(document).ready(function(){
 					
 					
 				    var data= new Array();   
-//		            data["KAIHH"]=projects.rows[i].KAIHH;
-		            if(jinrjg.rows[i].SHIFDKJAJHZYH==0){
-		            	data["TAG"]="贷款及按揭合作银行";
-
-		            }else{
-		            	
-		            	data["TAG"]="其他";
-		            }
-		            data["TOTAL"]=(jinrjg.rows[i].TOTAL_YUANB);
-		            
-		            if(jinrjg.rows[i].TOTAL_YUANB ==undefined){
-		            	
-		            	data["TOTAL"]=0.00;
-		            }
-//		            data["TOTAL_BLOCK"]=toMoney(projects.rows[i].TOTAL_YUANB);
 		            
 		         	data["BLOCK"]= jinrjg.rows[i].BANKMC;
 		         	data["COMPANY"]= jinrjg.rows[i].SUBCOMPANYNAME;
 
 		            
 		            getJianGData(data,jiang);
-//		            refreshData();
 
 					         
 				
 			}
 				
-				}else{
 					refreshData();
 				}
 				
-			
-				
-				
-//				});
-			
 			 
 		}
 	 
@@ -272,13 +357,13 @@ $(document).ready(function(){
 					 if(jiang.rows[i].BANKMC == data.BLOCK && jiang.rows[i].SUBCOMPANYNAME == data.COMPANY){
 						 
 						 
-						    if(jiang.rows[i].SHIFJGH==0){
-				            	 data["ALL_NO"]=(jiang.rows[i].TOTAL_JIANG);
+						    if(jiang.rows[i].SHIFJGH==1){
+				            	 data["ALL_NO"]=toMoney(jiang.rows[i].TOTAL_JIANG);
 				            }
 						    
-						    if(jiang.rows[i].SHIFJGH==1){
+						    if(jiang.rows[i].SHIFJGH==0){
 				            	
-				            	 data["ALL_YES"]=(jiang.rows[i].TOTAL_JIANG);
+				            	 data["ALL_YES"]=toMoney(jiang.rows[i].TOTAL_JIANG);
 				            }
 				          
 						}else{}
@@ -298,13 +383,47 @@ $(document).ready(function(){
 				
 				
 				
-				   getCompanyData(data,items);
+				getTotalData(data,totalData);
 				 
 				
 //				});
 			
 		
 		}
+	 function getTotalData(data,totalData) {  //小计
+
+			
+			
+			for (var i = 0; i<totalData.rows.length; i++) {
+				
+
+
+				 if(totalData.rows[i].BANKMC == data.BLOCK && totalData.rows[i].SUBCOMPANYNAME == data.COMPANY){
+					 
+					 
+					   
+			            	 data["TOTAL"]=toMoney(totalData.rows[i].TOTAL_JIANG);
+			           
+				 }
+				
+			}
+			
+			if(data["TOTAL"]==undefined){
+				
+				data["TOTAL"]=0.00;
+			}
+			
+			
+			
+			   getCompanyData(data,items);
+			 
+			
+//			});
+		
+	
+	}
+	 
+	 
 	 
 	 
 	 function getCompanyData(data,items) {  //
@@ -323,7 +442,7 @@ $(document).ready(function(){
 									        if(com.rows[i].ZHANGHXZMC == items.rows[j].ZHANGHXZMC ){
 				                    	 
 											 
-											 data[com.rows[i].ZHANGHXZMC]=(items.rows[j].YUANB);
+											 data[com.rows[i].ZHANGHXZMC]=toMoney(items.rows[j].BENWB);
 										
 				                    	 
 				                           }
@@ -348,8 +467,6 @@ $(document).ready(function(){
 				
 					 datas.push(data);
 						
-					 refreshData();
-						
 		
 					}
 	 
@@ -357,78 +474,7 @@ $(document).ready(function(){
 			
 			$('#dg').datagrid('loadData',datas);
 			
-			$('#dg').datagrid({loadFilter:pagerFilter}).datagrid({
-				collapsible: true,
-				singleSelect: true,
-				width: $(document).width() - 10,
-		        pagination: false,
-		        pageSize: 600,
-                pageList: [200, 250, 600],
-		        remoteFilter: true,
-		        onLoadSuccess: compute,//加载完毕后执行计算
-		        showFooter: true,
-		        fitcolumns:false,
-		        rownumbers:false,
-				mode: 'remote',
-				columns: [[{"title":"","colspan":2,"id":"test01"},
-				           {"title":"不可用余额","colspan":FEIJGZJNUM+1,"id":"test02"},
-				  		 {"title":"可用余额","colspan":JGZJNUM+1,"id":"test03"}, 
-				  		 {"title":"","colspan":1,"id":"test04"} ],columns],
-//				  		 {"title":"板块","colspan":BLOCKNUM+1,"id":"test05"}],columns],
-				onLoadSuccess: function(datas) {
-					
-					  var rows = $('#dg').datagrid('getRows');
-					    var ff = "";
-					    var j= new Array();
-					    var k=0;
-					    var g=0;
-					    var p=0;
-					   for (var i = 0; i < jinrjg.rows.length-1; i++) {
-					
-				           ff =jinrjg.rows[i+1]['BANKMC']
-					 
-						if(ff != jinrjg.rows[i]['BANKMC'])  {
-							  j.push(i);
-							  
-							  insertRow(k,(i)+(j.length));
-//							  k=((i)+(1)+ (j.length);
-//				
-							  k=(i)+1+ (j.length); ; //最后一模块起始位置
-					         
-
-				     
-				
-							
-						}
-					     
-				   
-				    	 
-				    	 p=(k+1)+(j.length); //最后一列位置
-				    
-					    
-				
-					   
-				   }
-					   
-			  if(blockid=="" || blockid==undefined){
-				   
-					  insertRow(k,p);  //最后模块小计
-					 appendTotalRow();
-				    	 
-			  }else{
-				  
-				  insertRow1();  //最后模块小计,选择了板块
-			  }
-
-				        //指定列进行合并操作(数组中写要合并的列名(field属性值))
-					mergeCellsByField("dg", "BLOCK");
-
-					   
-					 
-				    }
-			
-			
-			});
+		
 		}
 		
 		function compute() {//计算函数
@@ -443,7 +489,7 @@ $(document).ready(function(){
 		    ,ytotal=0//统计可用余额的总和
 		    ,ntotal=0//统计不可用余额的总和
 		    ,all=0;//统计unitcost的总和
-		    var  jsonData = {COMPANY : '<b>小计</b>'};
+		    var  jsonData = {"align": "right",COMPANY : '<b>小计</b>'};
 		 
 		    	
 		    	
@@ -462,20 +508,21 @@ $(document).ready(function(){
 		    				 
 		    				
 		    			  }
-		    			  
-		    			  ptotal += parseFloat(rows[i][com.rows[j].ZHANGHXZMC]);
-	    				  utotal += parseFloat(rows[i]['TOTAL']);
-	    				  ytotal += parseFloat(rows[i]['ALL_YES']);
-	    				  ntotal += parseFloat(rows[i]['ALL_NO']);
+		    			
+		    			  ptotal += parseFloat(clearFormat(rows[i][com.rows[j].ZHANGHXZMC]));
+	    				  utotal += parseFloat(clearFormat(rows[i]['TOTAL']));
+	    				  ytotal += parseFloat(clearFormat(rows[i]['ALL_YES']));
+	    				  ntotal += parseFloat(clearFormat(rows[i]['ALL_NO']));
 //	    			 
 		    		  }
 		    		
-		    		  jsonData[com.rows[j].ZHANGHXZMC] = ptotal;
+		    		  
+		    		  jsonData[com.rows[j].ZHANGHXZMC] = toMoney(ptotal);
 //		    		  fn(com.rows[j][ZHANGHXZMC],ptotal);
 //		    		  total.push( data);
-		    		  jsonData['TOTAL'] =utotal;
-		    		  jsonData['ALL_YES'] =ytotal;
-		    		  jsonData['ALL_NO'] =ntotal;
+		    		  jsonData['TOTAL'] =toMoney(utotal);
+		    		  jsonData['ALL_YES'] =toMoney(ytotal);
+		    		  jsonData['ALL_NO'] =toMoney(ntotal);
 		    		 
 		    	}
 		    	
@@ -499,7 +546,7 @@ $(document).ready(function(){
 		    ,ytotal=0//统计unitcost的总和
 		    ,ntotal=0//统计unitcost的总和
 		    ,all=0;//统计unitcost的总和
-		    var  jsonData = {COMPANY : '<b>合计</b>'};
+		    var  jsonData = {"align": "right",COMPANY : '<b>合计</b>'};
 		    	
 		    	
 		    	for (var j = 0; j<com.rows.length; j++) {
@@ -510,23 +557,63 @@ $(document).ready(function(){
 		    		ntotal =0 ;
 		    		  for (var i = 0; i < rows.length; i++) {
 		    			  
-		    		  ptotal += parseFloat(rows[i][com.rows[j].ZHANGHXZMC]);
-		    		  utotal += parseFloat(rows[i]['TOTAL']);
-    				  ytotal += parseFloat(rows[i]['ALL_YES']);
-    				  ntotal += parseFloat(rows[i]['ALL_NO']);
+		    		  ptotal += parseFloat(clearFormat(rows[i][com.rows[j].ZHANGHXZMC]));
+		    		  utotal += parseFloat(clearFormat(rows[i]['TOTAL']));
+    				  ytotal += parseFloat(clearFormat(rows[i]['ALL_YES']));
+    				  ntotal += parseFloat(clearFormat(rows[i]['ALL_NO']));
 //	    			 
 		    		  }
 		    		
-		    		  jsonData[com.rows[j].ZHANGHXZMC] = ptotal;
+		    		  jsonData[com.rows[j].ZHANGHXZMC] =toMoney(ptotal);
 //		    		  fn(com.rows[j][ZHANGHXZMC],ptotal);
 //		    		  total.push( data);
-		    		  jsonData['TOTAL'] =utotal;
-		    		  jsonData['ALL_YES'] =ytotal;
-		    		  jsonData['ALL_NO'] =ntotal;
+		    		  jsonData['TOTAL'] =toMoney(utotal);
+		    		  jsonData['ALL_YES'] =toMoney(ytotal);
+		    		  jsonData['ALL_NO'] =toMoney(ntotal);
 		    		 
 		    	}
 		    	
-		    	console.log(jsonData);
+
+		       
+		    
+		    //新增一行显示统计信息
+		    $('#dg').datagrid('appendRow',  jsonData);
+		}
+		
+		function insertRow2() {//计算函数
+		    var rows = $('#dg').datagrid('getRows')//获取当前的数据行
+		    var ptotal = 0//计算listprice的总和
+		    ,utotal=0//统计unitcost的总和
+		    ,ytotal=0//统计unitcost的总和
+		    ,ntotal=0//统计unitcost的总和
+		    ,all=0;//统计unitcost的总和
+		    var  jsonData = {"align": "right",COMPANY : '<b>小计</b>'};
+		    	
+		    	
+		    	for (var j = 0; j<com.rows.length; j++) {
+		    		
+		    		ptotal = 0 ;
+		    		utotal =0 ;
+		    		ytotal =0 ;
+		    		ntotal =0 ;
+		    		  for (var i = 0; i < rows.length; i++) {
+		    			  
+		    		  ptotal += parseFloat(clearFormat(rows[i][com.rows[j].ZHANGHXZMC]));
+		    		  utotal += parseFloat(clearFormat(rows[i]['TOTAL']));
+    				  ytotal += parseFloat(clearFormat(rows[i]['ALL_YES']));
+    				  ntotal += parseFloat(clearFormat(rows[i]['ALL_NO']));
+//	    			 
+		    		  }
+		    		
+		    		  jsonData[com.rows[j].ZHANGHXZMC] =toMoney(ptotal);
+//		    		  fn(com.rows[j][ZHANGHXZMC],ptotal);
+//		    		  total.push( data);
+		    		  jsonData['TOTAL'] =toMoney(utotal);
+		    		  jsonData['ALL_YES'] =toMoney(ytotal);
+		    		  jsonData['ALL_NO'] =toMoney(ntotal);
+		    		 
+		    	}
+		    	
 
 		       
 		    
@@ -542,7 +629,7 @@ $(document).ready(function(){
 		    ,ytotal=0//统计unitcost的总和
 		    ,ntotal=0//统计unitcost的总和
  		    ,all=0;//统计unitcost的总和
-		    var  jsonData = {COMPANY : '<b>合计</b>'};
+		    var  jsonData = {"align": "right",COMPANY : '<b>合计</b>'};
 		    	
 		    	
 		    	for (var j = 0; j<com.rows.length; j++) {
@@ -553,24 +640,22 @@ $(document).ready(function(){
 		    		ntotal =0 ;
 		    		  for (var i = 0; i < rows.length; i++) {
 		    			  
-		    		  ptotal += parseFloat(rows[i][com.rows[j].ZHANGHXZMC]);
-		    		  utotal += parseFloat(rows[i]['TOTAL']);
-    				  ytotal += parseFloat(rows[i]['ALL_YES']);
-    				  ntotal += parseFloat(rows[i]['ALL_NO']);
+		    		  ptotal += parseFloat(clearFormat(rows[i][com.rows[j].ZHANGHXZMC]));
+		    		  utotal += parseFloat(clearFormat(rows[i]['TOTAL']));
+    				  ytotal += parseFloat(clearFormat(rows[i]['ALL_YES']));
+    				  ntotal += parseFloat(clearFormat(rows[i]['ALL_NO']));
 //	    			 
 		    		  }
 		    		
-		    		  jsonData[com.rows[j].ZHANGHXZMC] = ptotal/2;
+		    		  jsonData[com.rows[j].ZHANGHXZMC] = toMoney(ptotal/2);
 //		    		  fn(com.rows[j][ZHANGHXZMC],ptotal);
 //		    		  total.push( data);
-		    		  jsonData['TOTAL'] =utotal/2;
-		    		  jsonData['ALL_YES'] =ytotal/2;
-		    		  jsonData['ALL_NO'] =ntotal/2;
+		    		  jsonData['TOTAL'] =toMoney(utotal/2);
+		    		  jsonData['ALL_YES'] =toMoney(ytotal/2);
+		    		  jsonData['ALL_NO'] =toMoney(ntotal/2);
 		    		 
 		    	}
 		    	
-		    	console.log(jsonData);
-
 		       
 		    
 		    //新增一行显示统计信息
@@ -654,6 +739,12 @@ $(document).ready(function(){
 			split = money.length > 0 ? ',' : '';
 			money = integer + split + money + float;
 			return (lessZero ? '-' : '') + money;
+		};
+		
+		var clearFormat = function(str) {
+			
+		return	str.toString().replace(/,/g,"");
+			
 		};
 	 
 	 function pagerFilter(data){
